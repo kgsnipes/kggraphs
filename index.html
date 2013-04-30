@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>KG-GRAPHS DEMO </title>
+<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="kggraph.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+	var data1=[[10,22],[20,60],[170,30]];
+
+	
+
+	var graph1=$("#graphDiv1").kggraph({'type':'point chart','width':500,'height':300,'data':data1,'useRGBAColorScheme':false});
+
+	var graph2=$("#graphDiv2").kggraph({'type':'point chart','width':500,'height':300,'data':data1,'useRGBAColorScheme':false,'useGrids':true});
+
+	var graph3=$("#graphDiv3").kggraph({'type':'point chart','width':500,'height':300,'data':data1,'useRGBAColorScheme':false,'useGrids':true,'connectPoints':true});
+
+	var graph4=$("#graphDiv4").kggraph({'type':'point chart','width':500,'height':300,'data':data1,'useRGBAColorScheme':false,'useGrids':true,'connectPoints':true,'connectPointsWithOrigin':true});
+
+
+	var data5=[[[10,22],[20,60],[170,30]],[[30,52],[40,70],[200,70]]];
+
+	var graph5=$("#graphDiv5").kggraph({'type':'point chart','width':500,'height':300,'data':data5,'useRGBAColorScheme':false,'useGrids':true,'connectPoints':true,'connectPointsWithOrigin':true,'hasTrends':true});
+
+
+
+	var data6=[['part1',31.1436536],['part2',69.999],['part3',0.000013],['part4',20],['part5',37],['part6',202.5],['part7',1000]];
+	var graph6=$("#graphDiv6").kggraph({'type':'pie chart','width':500,'height':300,'data':data6,'useRGBAColorScheme':false});
+
+});
+</script>
+</head>
+<body>
+<h2>KG-GRAPHS DEMO</h2>
+
+	<div id="graphDiv1">
+	
+	</div>
+
+	<div id="graphDiv2">
+	
+	</div>
+
+	<div id="graphDiv3">
+	
+	</div>
+
+
+	<div id="graphDiv4">
+	
+	</div>
+
+	<div id="graphDiv5">
+	
+	</div>
+
+	<div id="graphDiv6">
+	
+	</div>
+
+	
+
+	
+
+
+</body>
+</html>
