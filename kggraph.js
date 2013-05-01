@@ -465,7 +465,7 @@ var kgg={
 		}
 		else
 		{
-			//colors=self.getColors(valArr.length);
+			
 			if(self.options.useRGBAColorScheme)
 			{
 				colors=self.colorShades(3,data.length);
@@ -480,6 +480,7 @@ var kgg={
 		//label the axes
 		var labelx=xorigin+self.percent(xlength,10,true);
 		var labely=yorigin-self.percent(ylength,10,true);
+		var count=0;
 		for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
 		{
 			ctx.fillStyle = '#396bd5';
@@ -492,7 +493,22 @@ var kgg={
 		    ctx.stroke();
 		    ctx.closePath();
 		    labelx+=self.percent(xlength,10,true);
+		    count++;
 		}
+		
+		if(count<10)
+		{
+			ctx.fillStyle = '#396bd5';
+			ctx.beginPath();
+		    ctx.fillText(xmax.toFixed(2).toString(), labelx, yorigin+15);
+		    ctx.stroke();
+		    ctx.closePath();
+		    ctx.beginPath();
+		    ctx.fillRect(labelx, yorigin-2,4,4);
+		    ctx.stroke();
+		    ctx.closePath();
+		}
+		count=0;
 
 		for(i=self.percent(ymax,10,false);i<=ymax;i+=self.percent(ymax,10,false))
 		{
@@ -506,13 +522,29 @@ var kgg={
 		    ctx.stroke();
 		    ctx.closePath();
 		    labely-=self.percent(ylength,10,true);
+		    ++count;
 		}
+
+		if(count<10)
+		{
+			ctx.fillStyle = '#396bd5';
+			ctx.beginPath();
+		    ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
+		    ctx.stroke();
+		    ctx.closePath();
+		    ctx.beginPath();
+		    ctx.fillRect(xorigin-2, labely,4,4);
+		    ctx.stroke();
+		    ctx.closePath();
+		}
+
 
 		//draw grids if requested
 		if(self.options.useGrids)
 		{
 			var labelx=xorigin+self.percent(xlength,10,true);
 			var labely=yorigin-self.percent(ylength,10,true);
+			var count=0;
 			for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
 			{
 				ctx.strokeStyle = '#eeeeee';
@@ -522,7 +554,20 @@ var kgg={
 			    ctx.stroke();
 			    ctx.closePath();
 			    labelx+=self.percent(xlength,10,true);
+			    count++;
 			}
+
+			if(count<10)
+			{
+				ctx.strokeStyle = '#eeeeee';
+			    ctx.beginPath();
+			    ctx.moveTo(labelx, yorigin);
+			    ctx.lineTo(labelx, self.vfd(self.options.height*0.10));
+			    ctx.stroke();
+			    ctx.closePath();
+			}
+
+			count=0;
 
 			for(i=self.percent(ymax,10,false);i<=ymax;i+=self.percent(ymax,10,false))
 			{
@@ -533,6 +578,17 @@ var kgg={
 			    ctx.stroke();
 			    ctx.closePath();
 			    labely-=self.percent(ylength,10,true);
+			    count++;
+			}
+
+			if(count<10)
+			{
+				ctx.strokeStyle = '#eeeeee';
+			    ctx.beginPath();
+			    ctx.moveTo(xorigin, labely);
+			    ctx.lineTo(self.vfd(self.options.width*0.90), labely);
+			    ctx.stroke();
+			    ctx.closePath();
 			}
 		}
 		
@@ -673,6 +729,8 @@ var kgg={
 		var ymax=self.max(yvals);
 		ymax=ymax+self.percent(ymax,10,false);
 
+		console.log("xmax :"+xmax+" ymax :"+ymax);
+
 		var xorigin=self.vfd(self.options.width*0.10);
 	    var yorigin=self.vfd(self.options.height*0.90);
 	   // console.log("xorigin :"+xorigin+" yorigin:"+yorigin);
@@ -723,10 +781,13 @@ var kgg={
 		//label the axes
 		var labelx=xorigin+self.percent(xlength,10,true);
 		var labely=yorigin-self.percent(ylength,10,true);
+		var i;
+		var count=0;
 		for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
 		{
 			ctx.fillStyle = '#396bd5';
 			ctx.beginPath();
+			
 		    ctx.fillText(i.toFixed(2).toString(), labelx, yorigin+15);
 		    ctx.stroke();
 		    ctx.closePath();
@@ -735,13 +796,31 @@ var kgg={
 		    ctx.stroke();
 		    ctx.closePath();
 		    labelx+=self.percent(xlength,10,true);
+		    count++;
 		}
 
+		if(count<10)
+		{
+			ctx.fillStyle = '#396bd5';
+			ctx.beginPath();
+			
+		    ctx.fillText(xmax.toFixed(2).toString(), labelx, yorigin+15);
+		    ctx.stroke();
+		    ctx.closePath();
+		    ctx.beginPath();
+		    ctx.fillRect(labelx, yorigin-2,4,4);
+		    ctx.stroke();
+		    ctx.closePath();
+		}
+		
+		count=0;
 		for(i=self.percent(ymax,10,false);i<=ymax;i+=self.percent(ymax,10,false))
 		{
 			ctx.fillStyle = '#396bd5';
 			ctx.beginPath();
+			
 		    ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
+		   
 		    ctx.stroke();
 		    ctx.closePath();
 		    ctx.beginPath();
@@ -749,13 +828,31 @@ var kgg={
 		    ctx.stroke();
 		    ctx.closePath();
 		    labely-=self.percent(ylength,10,true);
+		    count++;
 		}
 
+		if(count<10)
+		{
+			ctx.fillStyle = '#396bd5';
+			ctx.beginPath();
+			
+		    ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
+		   
+		    ctx.stroke();
+		    ctx.closePath();
+		    ctx.beginPath();
+		    ctx.fillRect(xorigin-2, labely,4,4);
+		    ctx.stroke();
+		    ctx.closePath();
+		}
+
+		
 		//draw grids if requested
 		if(self.options.useGrids)
 		{
 			var labelx=xorigin+self.percent(xlength,10,true);
 			var labely=yorigin-self.percent(ylength,10,true);
+			var count=0;
 			for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
 			{
 				ctx.strokeStyle = '#eeeeee';
@@ -765,7 +862,20 @@ var kgg={
 			    ctx.stroke();
 			    ctx.closePath();
 			    labelx+=self.percent(xlength,10,true);
+			    count++;
 			}
+
+			if(count<10)
+			{
+				ctx.strokeStyle = '#eeeeee';
+			    ctx.beginPath();
+			    ctx.moveTo(labelx, yorigin);
+			    ctx.lineTo(labelx, self.vfd(self.options.height*0.10));
+			    ctx.stroke();
+			    ctx.closePath();
+			}
+
+			count=0;
 
 			for(i=self.percent(ymax,10,false);i<=ymax;i+=self.percent(ymax,10,false))
 			{
@@ -776,6 +886,17 @@ var kgg={
 			    ctx.stroke();
 			    ctx.closePath();
 			    labely-=self.percent(ylength,10,true);
+			    count++;
+			}
+
+			if(count<10)
+			{
+				ctx.strokeStyle = '#eeeeee';
+			    ctx.beginPath();
+			    ctx.moveTo(xorigin, labely);
+			    ctx.lineTo(self.vfd(self.options.width*0.90), labely);
+			    ctx.stroke();
+			    ctx.closePath();
 			}
 		}
 		
