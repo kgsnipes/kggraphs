@@ -293,6 +293,14 @@ var kgg={
     	return arr;
 
     },
+    componentToHex:function(c) {
+	    var hex = c.toString(16);
+	    return hex.length == 1 ? "0" + hex : hex;
+	},
+
+	rgbToHex:function (r, g, b) {
+	    return "#" + self.componentToHex(r) + self.componentToHex(g) + self.componentToHex(b);
+	},
 	drawPieChart:function(data) {
 
 		//console.log("drawing it");
@@ -315,9 +323,11 @@ var kgg={
 		var onePercentDegree=self.percent(360,1,false);
 		
 		var valArr=new Array();
+		var dataCopy=new Array();
 		for(i=0;i<data.length;i++)
 		{
 			valArr.push(data[i][1]);
+			dataCopy.push(data[i]);
 		}
 	
 		var sum=self.sum(valArr);
@@ -375,7 +385,7 @@ var kgg={
 
 
 		
-		self.$canvas.addEventListener('mousemove', function(evt){self.canvasMouseMoveForPieChart(evt);}, false);
+		self.$canvas.addEventListener('mousemove', function(evt){self.canvasMouseMoveForPieChart(evt,self,colors,dataCopy);}, false);
 		
 			self.drawLegendForPieChart(colors);
 		
@@ -775,14 +785,15 @@ var kgg={
 
 
 	},
-	canvasMouseMoveForPieChart:function(evt,colors,data)
+	canvasMouseMoveForPieChart:function(evt,obj,colors,data)
 	{
 		 var mousePos = self.getMousePos(evt.target, evt);
         var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
        
        var c = evt.target.getContext('2d').getImageData(mousePos.x, mousePos.y, 1, 1).data;
-       console.log(c);
-       var colorStr="rgb("+c[0].toString()+c[1].toString()+c[2].toString()+")";
+       //console.log(c);
+       //var colorStr="rgba("+c[0].toString()+c[1].toString()+c[2].toString()+")";
+       var index=self.containsVal(colors,self.rgbToHex(c[0],c[1],c[2]));
        if(index>-1)
         {
         	//console.log(index);
@@ -792,7 +803,7 @@ var kgg={
         		$(obj.options.tooltip).appendTo(obj.$elem);
         		$(obj.options.tooltip).css({'position': 'fixed','background-color':'#ffffff','border':'1px solid #396bd5'});
         	}
-        	$(obj.options.tooltip).text("( "+xvals[index]+" , "+yvals[index]+" )");
+        	$(obj.options.tooltip).text("( "+data[index][0]+" - "+data[index][1]+" )");
         	$(obj.options.tooltip).show();
         	$(obj.options.tooltip).css({'top': evt.clientY+'px','left': evt.clientX+'px'});
         }
@@ -804,6 +815,22 @@ var kgg={
         	}
         }
 
+	},
+	containsVal:function(arr,val)
+	{
+		var retVal=-1;
+		
+		for(i=0;i<arr.length;i++)
+		{
+			if(arr[i]==val)
+			{
+
+				retVal=i;
+				break;
+			}
+		}
+
+		return retVal;	
 	},
 	containsPos:function(arr,pos)
 	{
