@@ -60,7 +60,8 @@ var kgg={
 			self.drawPointChartWithTrends(self.options.data);
 		} 
 
-			
+
+	   
 
 	},
 	clearCanvas:function()
@@ -386,6 +387,18 @@ var kgg={
 
 		
 		self.$canvas.addEventListener('mousemove', function(evt){self.canvasMouseMoveForPieChart(evt,self,colors,dataCopy);}, false);
+		 self.$elem.addEventListener('mouseout', function(evt){
+
+			if(self.options.tooltip)
+			{
+				$(self.options.tooltip).remove();
+				self.options.tooltip=null;
+
+			}
+
+		}, false);
+
+
 		
 			self.drawLegendForPieChart(colors);
 		
@@ -745,7 +758,18 @@ var kgg={
    		 self.drawLegendForPointChart(colors);
 
    		 self.$canvas.addEventListener('mousemove', function(evt){self.canvasMouseMove(evt,plotxyN,self,xvals,yvals);}, false);
-   		//self.$canvas.addEventListener('mousedown', function(evt){self.canvasMouseDown(evt,plotxy);}, false);
+   		 
+   		 self.$elem.addEventListener('mouseout', function(evt){
+
+			if(self.options.tooltip)
+			{
+				$(self.options.tooltip).remove();
+				self.options.tooltip=null;
+
+			}
+
+		}, false);
+
 	},
 	canvasMouseDown:function(evt,points)
 	{
@@ -1236,6 +1260,16 @@ var kgg={
 
    		  self.$canvas.addEventListener('mousemove', function(evt){self.canvasMouseMove(evt,plotxyN,self,xvals,yvals);}, false);
 
+   		   self.$elem.addEventListener('mouseout', function(evt){
+
+			if(self.options.tooltip)
+			{
+				$(self.options.tooltip).remove();
+				self.options.tooltip=null;
+
+			}
+
+		}, false);
 
 
 	},
@@ -1356,7 +1390,7 @@ $.fn.kggraph.options={
 	connectPointsWithOrigin:false,
 	hasTrends:false,
 	plotPoints:[],
-	tooltip:''
+	tooltip:null
 };
 
 
