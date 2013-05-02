@@ -387,17 +387,7 @@ var kgg={
 
 		
 		self.$canvas.addEventListener('mousemove', function(evt){self.canvasMouseMoveForPieChart(evt,self,colors,dataCopy);}, false);
-		 self.$elem.addEventListener('mouseout', function(evt){
-
-			if(self.options.tooltip)
-			{
-				$(self.options.tooltip).remove();
-				self.options.tooltip=null;
-
-			}
-
-		}, false);
-
+		
 
 		
 			self.drawLegendForPieChart(colors);
@@ -759,16 +749,7 @@ var kgg={
 
    		 self.$canvas.addEventListener('mousemove', function(evt){self.canvasMouseMove(evt,plotxyN,self,xvals,yvals);}, false);
    		 
-   		 self.$elem.addEventListener('mouseout', function(evt){
-
-			if(self.options.tooltip)
-			{
-				$(self.options.tooltip).remove();
-				self.options.tooltip=null;
-
-			}
-
-		}, false);
+   		 
 
 	},
 	canvasMouseDown:function(evt,points)
@@ -1260,16 +1241,7 @@ var kgg={
 
    		  self.$canvas.addEventListener('mousemove', function(evt){self.canvasMouseMove(evt,plotxyN,self,xvals,yvals);}, false);
 
-   		   self.$elem.addEventListener('mouseout', function(evt){
 
-			if(self.options.tooltip)
-			{
-				$(self.options.tooltip).remove();
-				self.options.tooltip=null;
-
-			}
-
-		}, false);
 
 
 	},
