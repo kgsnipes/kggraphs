@@ -17,6 +17,7 @@ var kgg={
 		self=this;
 		self.obj=self;
 		self.$elem=$(elem);
+		self.$elem.css({'padding':'10px'});
 		self.options=$.extend({},$.fn.kggraph.options,options);
 
 		self.clear();
@@ -28,8 +29,8 @@ var kgg={
 
 		$(self.$canvas).appendTo(self.$elem);
 
-		//$(self.$canvas).css({'border':'1px solid #ccc'});
-
+		$(self.$canvas).css({'border':'1px solid #e1e8f8','margin-top':'10px','margin-bottom':'10px'});
+		self.$elem.css({'border':'3px dashed #eee','margin':'10px','overflow':'auto'});
 		
 		$(self.$canvas).attr('width',self.options.width);
 		$(self.$canvas).attr('height',self.options.height);
@@ -377,7 +378,7 @@ var kgg={
 	drawLegendForPieChart:function(colors)
 	{
 		self=this;
-		self.$elem.css({'border':'1px solid #ccc','margin':'10px','overflow':'auto'});
+		
 		$("<label>"+self.options.title+"</label>").insertBefore(self.$elem.children("canvas")[0]);
 
 		var htmlStr="<table>";
@@ -477,68 +478,6 @@ var kgg={
 			
 		}
 
-		//label the axes
-		var labelx=xorigin+self.percent(xlength,10,true);
-		var labely=yorigin-self.percent(ylength,10,true);
-		var count=0;
-		for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
-		{
-			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-		    ctx.fillText(i.toFixed(2).toString(), labelx, yorigin+15);
-		    ctx.stroke();
-		    ctx.closePath();
-		    ctx.beginPath();
-		    ctx.fillRect(labelx, yorigin-2,4,4);
-		    ctx.stroke();
-		    ctx.closePath();
-		    labelx+=self.percent(xlength,10,true);
-		    count++;
-		}
-		
-		if(count<10)
-		{
-			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-		    ctx.fillText(xmax.toFixed(2).toString(), labelx, yorigin+15);
-		    ctx.stroke();
-		    ctx.closePath();
-		    ctx.beginPath();
-		    ctx.fillRect(labelx, yorigin-2,4,4);
-		    ctx.stroke();
-		    ctx.closePath();
-		}
-		count=0;
-
-		for(i=self.percent(ymax,10,false);i<=ymax;i+=self.percent(ymax,10,false))
-		{
-			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-		    ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
-		    ctx.stroke();
-		    ctx.closePath();
-		    ctx.beginPath();
-		    ctx.fillRect(xorigin-2, labely,4,4);
-		    ctx.stroke();
-		    ctx.closePath();
-		    labely-=self.percent(ylength,10,true);
-		    ++count;
-		}
-
-		if(count<10)
-		{
-			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-		    ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
-		    ctx.stroke();
-		    ctx.closePath();
-		    ctx.beginPath();
-		    ctx.fillRect(xorigin-2, labely,4,4);
-		    ctx.stroke();
-		    ctx.closePath();
-		}
-
-
 		//draw grids if requested
 		if(self.options.useGrids)
 		{
@@ -591,6 +530,72 @@ var kgg={
 			    ctx.closePath();
 			}
 		}
+
+
+
+		//label the axes
+		var labelx=xorigin+self.percent(xlength,10,true);
+		var labely=yorigin-self.percent(ylength,10,true);
+		var count=0;
+		for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
+		{
+			ctx.fillStyle = '#396bd5';
+			ctx.beginPath();
+		    ctx.fillText(i.toFixed(2).toString(), labelx, yorigin+15);
+		    ctx.stroke();
+		    ctx.closePath();
+		    ctx.beginPath();
+		    ctx.fillRect(labelx-2, yorigin-2,4,4);
+		    ctx.stroke();
+		    ctx.closePath();
+		    labelx+=self.percent(xlength,10,true);
+		    count++;
+		}
+		
+		if(count<10)
+		{
+			ctx.fillStyle = '#396bd5';
+			ctx.beginPath();
+		    ctx.fillText(xmax.toFixed(2).toString(), labelx, yorigin+15);
+		    ctx.stroke();
+		    ctx.closePath();
+		    ctx.beginPath();
+		    ctx.fillRect(labelx-2, yorigin-2,4,4);
+		    ctx.stroke();
+		    ctx.closePath();
+		}
+		count=0;
+
+		for(i=self.percent(ymax,10,false);i<=ymax;i+=self.percent(ymax,10,false))
+		{
+			ctx.fillStyle = '#396bd5';
+			ctx.beginPath();
+		    ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
+		    ctx.stroke();
+		    ctx.closePath();
+		    ctx.beginPath();
+		    ctx.fillRect(xorigin-2, labely-2,4,4);
+		    ctx.stroke();
+		    ctx.closePath();
+		    labely-=self.percent(ylength,10,true);
+		    ++count;
+		}
+
+		if(count<10)
+		{
+			ctx.fillStyle = '#396bd5';
+			ctx.beginPath();
+		    ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
+		    ctx.stroke();
+		    ctx.closePath();
+		    ctx.beginPath();
+		    ctx.fillRect(xorigin-2, labely-2,4,4);
+		    ctx.stroke();
+		    ctx.closePath();
+		}
+
+
+		
 		
 		
 		var plotxy=new Array();
@@ -674,7 +679,7 @@ var kgg={
 	drawLegendForPointChart:function(colors)
 	{
 		self=this;
-		self.$elem.css({'border':'1px solid #ccc','margin':'10px','overflow':'auto'});
+		//self.$elem.css({'border':'1px solid #ccc','margin':'10px','overflow':'auto'});
 		$("<label>"+self.options.title+"</label>").insertBefore(self.$elem.children("canvas")[0]);
 
 		var htmlStr="<table>";
@@ -697,6 +702,7 @@ var kgg={
 		$(htmlStr).appendTo(self.$elem);
 		
 		//self.$elem.children("table").css({'margin':'0 auto'});
+
 		self.$elem.children("table").css({'margin':'10px'});
 		self.$elem.children("label").css({'margin':'10px'});
 		self.$elem.width();
@@ -778,75 +784,6 @@ var kgg={
 			
 		}
 
-		//label the axes
-		var labelx=xorigin+self.percent(xlength,10,true);
-		var labely=yorigin-self.percent(ylength,10,true);
-		var i;
-		var count=0;
-		for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
-		{
-			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-			
-		    ctx.fillText(i.toFixed(2).toString(), labelx, yorigin+15);
-		    ctx.stroke();
-		    ctx.closePath();
-		    ctx.beginPath();
-		    ctx.fillRect(labelx, yorigin-2,4,4);
-		    ctx.stroke();
-		    ctx.closePath();
-		    labelx+=self.percent(xlength,10,true);
-		    count++;
-		}
-
-		if(count<10)
-		{
-			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-			
-		    ctx.fillText(xmax.toFixed(2).toString(), labelx, yorigin+15);
-		    ctx.stroke();
-		    ctx.closePath();
-		    ctx.beginPath();
-		    ctx.fillRect(labelx, yorigin-2,4,4);
-		    ctx.stroke();
-		    ctx.closePath();
-		}
-		
-		count=0;
-		for(i=self.percent(ymax,10,false);i<=ymax;i+=self.percent(ymax,10,false))
-		{
-			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-			
-		    ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
-		   
-		    ctx.stroke();
-		    ctx.closePath();
-		    ctx.beginPath();
-		    ctx.fillRect(xorigin-2, labely,4,4);
-		    ctx.stroke();
-		    ctx.closePath();
-		    labely-=self.percent(ylength,10,true);
-		    count++;
-		}
-
-		if(count<10)
-		{
-			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-			
-		    ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
-		   
-		    ctx.stroke();
-		    ctx.closePath();
-		    ctx.beginPath();
-		    ctx.fillRect(xorigin-2, labely,4,4);
-		    ctx.stroke();
-		    ctx.closePath();
-		}
-
-		
 		//draw grids if requested
 		if(self.options.useGrids)
 		{
@@ -899,6 +836,70 @@ var kgg={
 			    ctx.closePath();
 			}
 		}
+
+
+
+		//label the axes
+		var labelx=xorigin+self.percent(xlength,10,true);
+		var labely=yorigin-self.percent(ylength,10,true);
+		var count=0;
+		for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
+		{
+			ctx.fillStyle = '#396bd5';
+			ctx.beginPath();
+		    ctx.fillText(i.toFixed(2).toString(), labelx, yorigin+15);
+		    ctx.stroke();
+		    ctx.closePath();
+		    ctx.beginPath();
+		    ctx.fillRect(labelx-2, yorigin-2,4,4);
+		    ctx.stroke();
+		    ctx.closePath();
+		    labelx+=self.percent(xlength,10,true);
+		    count++;
+		}
+		
+		if(count<10)
+		{
+			ctx.fillStyle = '#396bd5';
+			ctx.beginPath();
+		    ctx.fillText(xmax.toFixed(2).toString(), labelx, yorigin+15);
+		    ctx.stroke();
+		    ctx.closePath();
+		    ctx.beginPath();
+		    ctx.fillRect(labelx-2, yorigin-2,4,4);
+		    ctx.stroke();
+		    ctx.closePath();
+		}
+		count=0;
+
+		for(i=self.percent(ymax,10,false);i<=ymax;i+=self.percent(ymax,10,false))
+		{
+			ctx.fillStyle = '#396bd5';
+			ctx.beginPath();
+		    ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
+		    ctx.stroke();
+		    ctx.closePath();
+		    ctx.beginPath();
+		    ctx.fillRect(xorigin-2, labely-2,4,4);
+		    ctx.stroke();
+		    ctx.closePath();
+		    labely-=self.percent(ylength,10,true);
+		    ++count;
+		}
+
+		if(count<10)
+		{
+			ctx.fillStyle = '#396bd5';
+			ctx.beginPath();
+		    ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
+		    ctx.stroke();
+		    ctx.closePath();
+		    ctx.beginPath();
+		    ctx.fillRect(xorigin-2, labely-2,4,4);
+		    ctx.stroke();
+		    ctx.closePath();
+		}
+
 		
 		
 		var plotxy=new Array();
@@ -1001,7 +1002,7 @@ var kgg={
 	drawLegendForPointChartWithTrends:function(colors)
 	{
 		self=this;
-		self.$elem.css({'border':'1px solid #ccc','margin':'10px','overflow':'auto'});
+		//self.$elem.css({'border':'1px solid #ccc','margin':'10px','overflow':'auto'});
 		$("<label>"+self.options.title+"</label>").insertBefore(self.$elem.children("canvas")[0]);
 
 		
