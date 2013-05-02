@@ -462,12 +462,12 @@ var kgg={
 		var ymax=self.max(yvals);
 		ymax=ymax+self.percent(ymax,10,false);
 
-		var xorigin=self.vfd(self.options.width*0.20);
-	    var yorigin=self.vfd(self.options.height*0.80);
+		var xorigin=self.vfd(self.options.width*0.10);
+	    var yorigin=self.vfd(self.options.height*0.90);
 	   // console.log("xorigin :"+xorigin+" yorigin:"+yorigin);
 
-	    var ylength=self.vfd(self.options.height*0.80)-self.vfd(self.options.height*0.20);
-	    var xlength=self.vfd(self.options.width*0.80)-self.vfd(self.options.width*0.20);
+	    var ylength=self.vfd(self.options.height*0.90)-self.vfd(self.options.height*0.10);
+	    var xlength=self.vfd(self.options.width*0.90)-self.vfd(self.options.width*0.10);
 
 
 	   // console.log("xlength :"+xlength+" ylength:"+ylength);
@@ -476,10 +476,10 @@ var kgg={
 		// drawing the axes
 		ctx.strokeStyle = '#396bd5';
 	    ctx.beginPath();
-	    ctx.moveTo(self.vfd(self.options.width*0.20), self.vfd(self.options.height*0.80));
-	    ctx.lineTo(self.vfd(self.options.width*0.80), self.vfd(self.options.height*0.80));
-	    ctx.moveTo(self.vfd(self.options.width*0.20), self.vfd(self.options.height*0.80));
-	    ctx.lineTo(self.vfd(self.options.width*0.20), self.vfd(self.options.height*0.20));
+	    ctx.moveTo(self.vfd(self.options.width*0.10), self.vfd(self.options.height*0.90));
+	    ctx.lineTo(self.vfd(self.options.width*0.90), self.vfd(self.options.height*0.90));
+	    ctx.moveTo(self.vfd(self.options.width*0.10), self.vfd(self.options.height*0.90));
+	    ctx.lineTo(self.vfd(self.options.width*0.10), self.vfd(self.options.height*0.10));
 	    ctx.stroke();
 	    ctx.closePath();
 	    // drawing the axes
@@ -520,7 +520,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(labelx, yorigin);
-			    ctx.lineTo(labelx, self.vfd(self.options.height*0.20));
+			    ctx.lineTo(labelx, self.vfd(self.options.height*0.10));
 			    ctx.stroke();
 			    ctx.closePath();
 			    labelx+=self.percent(xlength,10,true);
@@ -532,7 +532,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(labelx, yorigin);
-			    ctx.lineTo(labelx, self.vfd(self.options.height*0.20));
+			    ctx.lineTo(labelx, self.vfd(self.options.height*0.10));
 			    ctx.stroke();
 			    ctx.closePath();
 			}
@@ -544,7 +544,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(xorigin, labely);
-			    ctx.lineTo(self.vfd(self.options.width*0.80), labely);
+			    ctx.lineTo(self.vfd(self.options.width*0.90), labely);
 			    ctx.stroke();
 			    ctx.closePath();
 			    labely-=self.percent(ylength,10,true);
@@ -556,7 +556,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(xorigin, labely);
-			    ctx.lineTo(self.vfd(self.options.width*0.80), labely);
+			    ctx.lineTo(self.vfd(self.options.width*0.90), labely);
 			    ctx.stroke();
 			    ctx.closePath();
 			}
@@ -596,13 +596,12 @@ var kgg={
 		    ctx.closePath();
 		}
 		count=0;
-		var yaxisSpacing=new Array();
+
 		for(i=self.percent(ymax,10,false);i<=ymax;i+=self.percent(ymax,10,false))
 		{
 			ctx.fillStyle = '#396bd5';
 			ctx.beginPath();
 		    ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
-		    yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
 		    ctx.stroke();
 		    ctx.closePath();
 		    ctx.beginPath();
@@ -618,7 +617,6 @@ var kgg={
 			ctx.fillStyle = '#396bd5';
 			ctx.beginPath();
 		    ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
-		     yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
 		    ctx.stroke();
 		    ctx.closePath();
 		    ctx.beginPath();
@@ -628,25 +626,7 @@ var kgg={
 		}
 
 
-		//labelling the axes with axes names
-		if(self.options.columnTitles && self.options.columnTitles.length==2)
-		{
-
-			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-		    ctx.fillText(self.options.columnTitles[0], self.vfd(self.options.width*0.30), self.vfd(self.options.height*0.90));
-		    ctx.stroke();
-		    ctx.closePath();
-
-
-		   
-
-		    ctx.save();
-		    ctx.translate(self.max(yaxisSpacing)-self.vfd(self.options.height*0.05), self.vfd(self.options.height*0.70));
-			ctx.rotate(-Math.PI/2);
-		    ctx.fillText(self.options.columnTitles[1], 0, 0);
-		    ctx.restore();
-		}
+		
 		
 		
 		var plotxy=new Array();
@@ -816,12 +796,12 @@ var kgg={
 
 		//console.log("xmax :"+xmax+" ymax :"+ymax);
 
-		var xorigin=self.vfd(self.options.width*0.20);
-	    var yorigin=self.vfd(self.options.height*0.80);
+		var xorigin=self.vfd(self.options.width*0.10);
+	    var yorigin=self.vfd(self.options.height*0.90);
 	   // console.log("xorigin :"+xorigin+" yorigin:"+yorigin);
 
-	    var ylength=self.vfd(self.options.height*0.80)-self.vfd(self.options.height*0.20);
-	    var xlength=self.vfd(self.options.width*0.80)-self.vfd(self.options.width*0.20);
+	    var ylength=self.vfd(self.options.height*0.90)-self.vfd(self.options.height*0.10);
+	    var xlength=self.vfd(self.options.width*0.90)-self.vfd(self.options.width*0.10);
 
 
 	   // console.log("xlength :"+xlength+" ylength:"+ylength);
@@ -830,10 +810,10 @@ var kgg={
 		// drawing the axes
 		ctx.strokeStyle = '#396bd5';
 	    ctx.beginPath();
-	    ctx.moveTo(self.vfd(self.options.width*0.20), self.vfd(self.options.height*0.80));
-	    ctx.lineTo(self.vfd(self.options.width*0.80), self.vfd(self.options.height*0.80));
-	    ctx.moveTo(self.vfd(self.options.width*0.20), self.vfd(self.options.height*0.80));
-	    ctx.lineTo(self.vfd(self.options.width*0.20), self.vfd(self.options.height*0.20));
+	    ctx.moveTo(self.vfd(self.options.width*0.10), self.vfd(self.options.height*0.90));
+	    ctx.lineTo(self.vfd(self.options.width*0.90), self.vfd(self.options.height*0.90));
+	    ctx.moveTo(self.vfd(self.options.width*0.10), self.vfd(self.options.height*0.90));
+	    ctx.lineTo(self.vfd(self.options.width*0.10), self.vfd(self.options.height*0.10));
 	    ctx.stroke();
 	    ctx.closePath();
 	    // drawing the axes
@@ -951,13 +931,11 @@ var kgg={
 		}
 		count=0;
 
-		var yaxisSpacing=new Array();
 		for(i=self.percent(ymax,10,false);i<=ymax;i+=self.percent(ymax,10,false))
 		{
 			ctx.fillStyle = '#396bd5';
 			ctx.beginPath();
 		    ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
-		    yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
 		    ctx.stroke();
 		    ctx.closePath();
 		    ctx.beginPath();
@@ -973,7 +951,6 @@ var kgg={
 			ctx.fillStyle = '#396bd5';
 			ctx.beginPath();
 		    ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
-		    yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
 		    ctx.stroke();
 		    ctx.closePath();
 		    ctx.beginPath();
@@ -983,27 +960,6 @@ var kgg={
 		}
 
 		
-		//labelling the axes with axes names
-		if(self.options.columnTitles && self.options.columnTitles.length==2)
-		{
-
-			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-		    ctx.fillText(self.options.columnTitles[0], self.vfd(self.options.width*0.30), self.vfd(self.options.height*0.90));
-		    ctx.stroke();
-		    ctx.closePath();
-
-
-		   
-
-		    ctx.save();
-		    ctx.translate(self.max(yaxisSpacing)-self.vfd(self.options.height*0.05), self.vfd(self.options.height*0.70));
-			ctx.rotate(-Math.PI/2);
-		    ctx.fillText(self.options.columnTitles[1], 0, 0);
-		    ctx.restore();
-		}
-		
-
 		
 		var plotxy=new Array();
 		
