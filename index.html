@@ -1,13 +1,13 @@
 <html>
 <head>
-<title>KG-GRAPHS DEMO </title>
+<title>KG-GRAPHS DEMO -kaushik ganguly </title>
 <script type="text/javascript" src="jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="kggraph.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 
 //	var data1=[[10,22],[70,170],[40,30]];
-	var data1=giveRandom2DArray(50,100);
+	var data1=giveRandom2DArray(10,100);
 	
 //simple plot graph
 	var graph1=$("#graphDiv1").kggraph({'title':'simple plot graph','type':'point chart','width':500,'height':300,'data':data1,'useRGBAColorScheme':false,'columnTitles':['sample-x','sample-y']});
@@ -26,7 +26,7 @@ $(document).ready(function(){
 
 //trends graph
 	//var data5=[[[10,22],[20,60],[170,30]],[[30,52],[40,70],[200,70]],[[40,62],[150,78]]];
-	var data5=[giveRandom2DArray(5,100),giveRandom2DArray(10,100),giveRandom2DArray(25,100)];
+	var data5=[giveRandom2DArray(5,100),giveRandom2DArray(10,100),giveRandom2DArray(5,100)];
 
 	var graph5=$("#graphDiv5").kggraph({'title':'trends graph','type':'point chart','width':500,'height':300,'data':data5,'useRGBAColorScheme':false,'useGrids':true,'connectPoints':true,'connectPointsWithOrigin':true,'hasTrends':true,'columnTitles':['sample-x','sample-y'],'trendTitles':['trend - 1','trend - 2','trend - 3']});
 

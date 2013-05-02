@@ -1,3 +1,9 @@
+/*
+author: kaushik ganguly
+email; kgsnipes@gmail.com
+
+*/
+
 //this is a utility to have Object.create() work on browsers that do not support
 if(typeof Object.create !=='function'){
 	Object.create=function(obj){
