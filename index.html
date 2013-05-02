@@ -6,29 +6,60 @@
 <script type="text/javascript">
 $(document).ready(function(){
 
-	var data1=[[10,22],[70,170],[40,30]];
-
+//	var data1=[[10,22],[70,170],[40,30]];
+	var data1=giveRandom2DArray(50,100);
 	
+//simple plot graph
+	var graph1=$("#graphDiv1").kggraph({'title':'simple plot graph','type':'point chart','width':500,'height':300,'data':data1,'useRGBAColorScheme':false,'columnTitles':['sample-x','sample-y']});
 
-	var graph1=$("#graphDiv1").kggraph({'title':'simple plot graph','type':'point chart','width':500,'height':300,'data':data1,'useRGBAColorScheme':false});
+//simple plot graph with grids
+	var graph2=$("#graphDiv2").kggraph({'title':'simple plot graph with grids','type':'point chart','width':500,'height':300,'data':data1,'useRGBAColorScheme':false,'useGrids':true,'columnTitles':['sample-x','sample-y']});
 
-	var graph2=$("#graphDiv2").kggraph({'title':'simple plot graph with grids','type':'point chart','width':500,'height':300,'data':data1,'useRGBAColorScheme':false,'useGrids':true});
-
-	var graph3=$("#graphDiv3").kggraph({'title':'simple plot graph with connected points','type':'point chart','width':500,'height':300,'data':data1,'useRGBAColorScheme':false,'useGrids':true,'connectPoints':true});
-
-	var graph4=$("#graphDiv4").kggraph({'title':'simple plot graph with connected points including the origin','type':'point chart','width':500,'height':300,'data':data1,'useRGBAColorScheme':false,'useGrids':true,'connectPoints':true,'connectPointsWithOrigin':true});
-
-
-	var data5=[[[10,22],[20,60],[170,30]],[[30,52],[40,70],[200,70]],[[40,62],[20,78]]];
-
-	var graph5=$("#graphDiv5").kggraph({'title':'trends graph','type':'point chart','width':500,'height':300,'data':data5,'useRGBAColorScheme':false,'useGrids':true,'connectPoints':true,'connectPointsWithOrigin':true,'hasTrends':true});
+//simple plot graph with connected points
+	var graph3=$("#graphDiv3").kggraph({'title':'simple plot graph with connected points','type':'point chart','width':500,'height':300,'data':data1,'useRGBAColorScheme':false,'useGrids':true,'connectPoints':true,'columnTitles':['sample-x','sample-y']});
 
 
+//simple plot graph with connected points including the origin
+	var graph4=$("#graphDiv4").kggraph({'title':'simple plot graph with connected points including the origin','type':'point chart','width':500,'height':300,'data':data1,'useRGBAColorScheme':false,'useGrids':true,'connectPoints':true,'connectPointsWithOrigin':true,'columnTitles':['sample-x','sample-y']});
 
+
+
+//trends graph
+	//var data5=[[[10,22],[20,60],[170,30]],[[30,52],[40,70],[200,70]],[[40,62],[150,78]]];
+	var data5=[giveRandom2DArray(5,100),giveRandom2DArray(10,100),giveRandom2DArray(25,100)];
+
+	var graph5=$("#graphDiv5").kggraph({'title':'trends graph','type':'point chart','width':500,'height':300,'data':data5,'useRGBAColorScheme':false,'useGrids':true,'connectPoints':true,'connectPointsWithOrigin':true,'hasTrends':true,'columnTitles':['sample-x','sample-y'],'trendTitles':['trend - 1','trend - 2','trend - 3']});
+
+
+//simple pie chart
 	var data6=[['part1',31.1436536],['part2',69.999],['part3',0.000013],['part4',20],['part5',37],['part6',202.5],['part7',1000]];
-	var graph6=$("#graphDiv6").kggraph({'title':'simple pie chart','type':'pie chart','width':500,'height':300,'data':data6,'useRGBAColorScheme':false});
+	var graph6=$("#graphDiv6").kggraph({'title':'simple pie chart','type':'pie chart','width':500,'height':300,'data':data6,'useRGBAColorScheme':false,'columnTitles':['parts','qty']});
 
 });
+
+
+function giveRandom2DArray(q,seed)
+{
+	var retArr=new Array();
+
+	
+	for(i=0;i<q;i++)
+	{
+		var t=new Array();
+		for(j=0;j<2;j++)
+		{
+			t.push(parseFloat((Math.random()*seed).toFixed(2)));
+			
+		}
+
+		retArr.push(t);
+	}
+
+
+
+console.log(JSON.stringify(retArr));
+	return retArr;
+}
 </script> 
 </head>
 <body>

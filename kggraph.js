@@ -383,6 +383,31 @@ var kgg={
 
 		var htmlStr="<table>";
 		var data=self.options.data;
+		htmlStr+="<tr>";
+		
+		if(self.options.columnTitles && self.options.columnTitles.length==2)
+		{
+			htmlStr+="<td>&nbsp;&nbsp;&nbsp;";
+			htmlStr+="</td>";
+			htmlStr+="<td>&nbsp;&nbsp;"+self.options.columnTitles[0];
+			htmlStr+="</td>";
+			htmlStr+="<td>&nbsp;&nbsp;"+self.options.columnTitles[1];
+			htmlStr+="</td>";
+
+		}
+		/*else
+		{
+			htmlStr+="<td>(X - axis)";
+			htmlStr+="</td>";
+			htmlStr+="<td>(Y - axis)";
+			htmlStr+="</td>";
+		}*/
+			
+
+		
+
+		htmlStr+="</tr>";
+
 		for(i=0;i<data.length;i++)
 		{
 			htmlStr+="<tr>";
@@ -684,12 +709,40 @@ var kgg={
 
 		var htmlStr="<table>";
 		var data=self.options.data;
+
+		htmlStr+="<tr>";
+		htmlStr+="<td>&nbsp;&nbsp;&nbsp;";
+		htmlStr+="</td>";
+		
+
+		if(self.options.columnTitles && self.options.columnTitles.length==2)
+		{
+			htmlStr+="<td>(X - axis)</br>"+self.options.columnTitles[0];
+			htmlStr+="</td>";
+			htmlStr+="<td>(Y - axis)</br>"+self.options.columnTitles[1];
+			htmlStr+="</td>";
+
+		}
+		else
+		{
+			htmlStr+="<td>(X - axis)";
+			htmlStr+="</td>";
+			htmlStr+="<td>(Y - axis)";
+			htmlStr+="</td>";
+		}
+			
+
+		htmlStr+="</tr>";
+
+
 		for(i=0;i<data.length;i++)
 		{
 			htmlStr+="<tr>";
 			htmlStr+="<td style=\"background-color:"+colors[i]+"\">&nbsp;&nbsp;&nbsp;";
 			htmlStr+="</td>";
-			htmlStr+="<td>&nbsp;&nbsp;("+data[i][0]+",&nbsp;"+data[i][1]+")";
+			htmlStr+="<td>&nbsp;&nbsp;"+data[i][0]+"";
+			htmlStr+="</td>";
+			htmlStr+="<td>&nbsp;&nbsp;"+data[i][1]+"";
 			htmlStr+="</td>";
 			htmlStr+="</tr>";
 
@@ -735,7 +788,7 @@ var kgg={
 		var ymax=self.max(yvals);
 		ymax=ymax+self.percent(ymax,10,false);
 
-		console.log("xmax :"+xmax+" ymax :"+ymax);
+		//console.log("xmax :"+xmax+" ymax :"+ymax);
 
 		var xorigin=self.vfd(self.options.width*0.10);
 	    var yorigin=self.vfd(self.options.height*0.90);
@@ -942,13 +995,16 @@ var kgg={
         	plotxy.push(plotthis);
    		 }
 
+
+   		 var trendColors=new Array();
    		 for (k = 0; k<plotxy.length; k++)
 		 {
-		 	console.log(plotxy[k]);
+		 	//console.log(plotxy[k]);
 
 		 	if(self.options.connectPoints)
 			{
 				var connectColor=self.getColors(1)[0];
+				trendColors.push(connectColor);
 				if(plotxy[k].length==1)
 				{
 
@@ -996,10 +1052,10 @@ var kgg={
    		 
 
 
-   		 self.drawLegendForPointChartWithTrends(colors);
+   		 self.drawLegendForPointChartWithTrends(colors,trendColors);
 
 	},
-	drawLegendForPointChartWithTrends:function(colors)
+	drawLegendForPointChartWithTrends:function(colors,trendColors)
 	{
 		self=this;
 		//self.$elem.css({'border':'1px solid #ccc','margin':'10px','overflow':'auto'});
@@ -1007,22 +1063,63 @@ var kgg={
 
 		
 		var data=self.options.data;
+
+
+		
+
+
+
 		for(i=0;i<data.length;i++)
 		{
 			var htmlStr="<table>";
+
+			if(self.options.trendTitles && self.options.trendTitles.length>0 && self.options.trendTitles[i])
+			{
 				htmlStr+="<tr>";
-				htmlStr+="<td colspan=\"2\">Trend - "+(i+1);
-				htmlStr+="</td>";
+				htmlStr+="<td colspan=\"2\"><label style=\"color:"+trendColors[i]+"\">"+self.options.trendTitles[i];
+				htmlStr+="</label></td>";
 				htmlStr+="</tr>";
+			}
+				
+
+				htmlStr+="<tr>";
+				htmlStr+="<td>&nbsp;&nbsp;&nbsp;";
+				htmlStr+="</td>";
+				
+
+				if(self.options.columnTitles && self.options.columnTitles.length==2)
+				{
+					htmlStr+="<td>(X - axis)</br>"+self.options.columnTitles[0];
+					htmlStr+="</td>";
+					htmlStr+="<td>(Y - axis)</br>"+self.options.columnTitles[1];
+					htmlStr+="</td>";
+
+				}
+				else
+				{
+					htmlStr+="<td>(X - axis)";
+					htmlStr+="</td>";
+					htmlStr+="<td>(Y - axis)";
+					htmlStr+="</td>";
+				}
+					
+
+				htmlStr+="</tr>";
+
+
 			for(j=0;j<data[i].length;j++)
 			{
 				
-				htmlStr+="<tr>";
-				htmlStr+="<td style=\"background-color:"+colors[(i*2)+j]+"\">&nbsp;&nbsp;&nbsp;";
-				htmlStr+="</td>";
-				htmlStr+="<td>&nbsp;&nbsp;("+data[i][j][0]+",&nbsp;"+data[i][j][1]+")";
-				htmlStr+="</td>";
-				htmlStr+="</tr>";
+
+			htmlStr+="<tr>";
+			htmlStr+="<td style=\"background-color:"+colors[(i*2)+j]+"\">&nbsp;&nbsp;&nbsp;";
+			htmlStr+="</td>";
+			htmlStr+="<td>&nbsp;&nbsp;"+data[i][j][0]+"";
+			htmlStr+="</td>";
+			htmlStr+="<td>&nbsp;&nbsp;"+data[i][j][1]+"";
+			htmlStr+="</td>";
+			htmlStr+="</tr>";
+
 				
 			}
 			htmlStr+="</table>";
@@ -1067,6 +1164,7 @@ $.fn.kggraph.options={
 	title:'sample  chart',
 	data:[],
 	columnTitles:[],
+	trendTitles:[],
 	colors:[],
 	useRGBAColorScheme:true,
 	useGrids:false,
