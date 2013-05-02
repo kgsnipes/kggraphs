@@ -375,7 +375,7 @@ var kgg={
 
 
 		
-		
+		self.$canvas.addEventListener('mousemove', function(evt){self.canvasMouseMoveForPieChart(evt);}, false);
 		
 			self.drawLegendForPieChart(colors);
 		
@@ -650,6 +650,7 @@ var kgg={
 		
 		
 		var plotxy=new Array();
+		var plotxyN=new Array();
 		
 		if(self.options.connectPointsWithOrigin)
 		{
@@ -672,10 +673,13 @@ var kgg={
 		        //console.log(x+","+y)
 
 		        plotxy.push(x+","+y);
+		        plotxyN.push([x,y]);
 		        ctx.closePath();
         
    		 }
 
+
+   		 
    		 //connect the points
 
    		 if(self.options.connectPoints)
@@ -724,9 +728,106 @@ var kgg={
 		}
 
 
+		//self.options.plotPoints=plotxy;
+
+		
+		//console.log("these are plot points "+JSON.stringify(self.options.plotPoints));
    		 self.drawLegendForPointChart(colors);
 
+   		 self.$canvas.addEventListener('mousemove', function(evt){self.canvasMouseMove(evt,plotxyN,self,xvals,yvals);}, false);
+   		//self.$canvas.addEventListener('mousedown', function(evt){self.canvasMouseDown(evt,plotxy);}, false);
 	},
+	canvasMouseDown:function(evt,points)
+	{
+
+		 var mousePos = self.getMousePos(evt.target, evt);
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+        console.log(message);
+        console.log("these are plot points "+JSON.stringify(points));
+	},
+	canvasMouseMove:function(evt,points,obj,xvals,yvals)
+	{
+		 var mousePos = self.getMousePos(evt.target, evt);
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+       
+      
+       var index=self.containsPos(points,[mousePos.x ,mousePos.y]);
+        if(index>-1)
+        {
+        	//console.log(index);
+        	if(!obj.options.tooltip)
+        	{
+        		obj.options.tooltip=document.createElement("label");
+        		$(obj.options.tooltip).appendTo(obj.$elem);
+        		$(obj.options.tooltip).css({'position': 'fixed','background-color':'#ffffff','border':'1px solid #396bd5'});
+        	}
+        	$(obj.options.tooltip).text("( "+xvals[index]+" , "+yvals[index]+" )");
+        	$(obj.options.tooltip).show();
+        	$(obj.options.tooltip).css({'top': evt.clientY+'px','left': evt.clientX+'px'});
+        }
+        else
+        {
+        	if(obj.options.tooltip)
+        	{
+        		$(obj.options.tooltip).hide();
+        	}
+        }
+
+
+	},
+	canvasMouseMoveForPieChart:function(evt,colors,data)
+	{
+		 var mousePos = self.getMousePos(evt.target, evt);
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+       
+       var c = evt.target.getContext('2d').getImageData(mousePos.x, mousePos.y, 1, 1).data;
+       console.log(c);
+       var colorStr="rgb("+c[0].toString()+c[1].toString()+c[2].toString()+")";
+       if(index>-1)
+        {
+        	//console.log(index);
+        	if(!obj.options.tooltip)
+        	{
+        		obj.options.tooltip=document.createElement("label");
+        		$(obj.options.tooltip).appendTo(obj.$elem);
+        		$(obj.options.tooltip).css({'position': 'fixed','background-color':'#ffffff','border':'1px solid #396bd5'});
+        	}
+        	$(obj.options.tooltip).text("( "+xvals[index]+" , "+yvals[index]+" )");
+        	$(obj.options.tooltip).show();
+        	$(obj.options.tooltip).css({'top': evt.clientY+'px','left': evt.clientX+'px'});
+        }
+        else
+        {
+        	if(obj.options.tooltip)
+        	{
+        		$(obj.options.tooltip).hide();
+        	}
+        }
+
+	},
+	containsPos:function(arr,pos)
+	{
+		var retVal=-1;
+		
+		for(i=0;i<arr.length;i++)
+		{
+			if(((arr[i][0]==pos[0] && arr[i][1]==pos[1])) || ((pos[0]>=arr[i][0] && pos[0]<=arr[i][0]+10) && (pos[1]>=arr[i][1] && pos[1]<=arr[i][1]+10)) )
+			{
+
+				retVal=i;
+				break;
+			}
+		}
+
+		return retVal;	
+	},
+	getMousePos:function (canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      },
 	drawLegendForPointChart:function(colors)
 	{
 		self=this;
@@ -874,7 +975,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(labelx, yorigin);
-			    ctx.lineTo(labelx, self.vfd(self.options.height*0.10));
+			    ctx.lineTo(labelx, self.vfd(self.options.height*0.20));
 			    ctx.stroke();
 			    ctx.closePath();
 			    labelx+=self.percent(xlength,10,true);
@@ -886,7 +987,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(labelx, yorigin);
-			    ctx.lineTo(labelx, self.vfd(self.options.height*0.10));
+			    ctx.lineTo(labelx, self.vfd(self.options.height*0.20));
 			    ctx.stroke();
 			    ctx.closePath();
 			}
@@ -898,7 +999,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(xorigin, labely);
-			    ctx.lineTo(self.vfd(self.options.width*0.90), labely);
+			    ctx.lineTo(self.vfd(self.options.width*0.80), labely);
 			    ctx.stroke();
 			    ctx.closePath();
 			    labely-=self.percent(ylength,10,true);
@@ -910,7 +1011,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(xorigin, labely);
-			    ctx.lineTo(self.vfd(self.options.width*0.90), labely);
+			    ctx.lineTo(self.vfd(self.options.width*0.80), labely);
 			    ctx.stroke();
 			    ctx.closePath();
 			}
@@ -1006,6 +1107,7 @@ var kgg={
 
 		
 		var plotxy=new Array();
+		var plotxyN=new Array();
 		
 		
 		//plot points
@@ -1035,6 +1137,7 @@ var kgg={
 		        //console.log(x+","+y)
 
 		        plotthis.push(x+","+y);
+		        plotxyN.push([x,y]);
 		        ctx.closePath();
 
 
@@ -1103,6 +1206,10 @@ var kgg={
 
 
    		 self.drawLegendForPointChartWithTrends(colors,trendColors);
+
+   		  self.$canvas.addEventListener('mousemove', function(evt){self.canvasMouseMove(evt,plotxyN,self,xvals,yvals);}, false);
+
+
 
 	},
 	drawLegendForPointChartWithTrends:function(colors,trendColors)
@@ -1220,7 +1327,9 @@ $.fn.kggraph.options={
 	useGrids:false,
 	connectPoints:false,
 	connectPointsWithOrigin:false,
-	hasTrends:false
+	hasTrends:false,
+	plotPoints:[],
+	tooltip:''
 };
 
 
