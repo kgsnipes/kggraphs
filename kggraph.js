@@ -286,6 +286,10 @@ var kgg={
     			do
     			{
     				color=self.randomColor();
+    				if(color=="#ffffff")
+    				{
+    					continue;
+    				}
     			}while(self.containsElement(arr,color));
 
     			arr.push(color);
