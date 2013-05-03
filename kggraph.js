@@ -35,8 +35,8 @@ var kgg={
 
 		$(self.$canvas).appendTo(self.$elem);
 
-		$(self.$canvas).css({'border':'1px solid #e1e8f8','margin-top':'10px','margin-bottom':'10px'});
-		self.$elem.css({'border':'3px dashed #eee','margin':'10px','overflow':'auto'});
+		$(self.$canvas).css({'border':'1px solid #e1e8f8','margin-top':'10px','margin-bottom':'10px','border-radius':'5px'});
+		self.$elem.css({'border':'3px dashed #eee','margin':'10px','overflow':'auto','border-radius':'5px'});
 		
 		$(self.$canvas).attr('width',self.options.width);
 		$(self.$canvas).attr('height',self.options.height);
@@ -451,7 +451,7 @@ var kgg={
 		$(htmlStr).appendTo(self.$elem);
 		
 		//self.$elem.children("table").css({'margin':'0 auto'});
-		self.$elem.children("table").css({'margin':'10px'});
+		self.$elem.children("table").css({'margin':'10px','border':'1px solid #eee','border-radius':'5px'});
 		self.$elem.children("label").css({'margin':'10px'});
 		self.$elem.width();
 		self.$elem.height(self.$elem.height()+self.$elem.children("table").height()+(self.$elem.children("label").height()*2));
@@ -461,9 +461,12 @@ var kgg={
 	{
 		var canvas=self.$canvas;
 		var ctx = canvas.getContext('2d');
-		var fontSizePixel=10;
+		var fontSizePixel=self.options.fontSize;
 		ctx.font=fontSizePixel+"px Arial";
+		var fontSizePixelWidth=ctx.measureText("H").width;
+		var fontSizePixelHeight=fontSizePixel;
 
+		//console.log("fontSizePixelHeight :"+fontSizePixelHeight);
 		var xvals=new Array();
 		var yvals=new Array();
 
@@ -480,15 +483,15 @@ var kgg={
 		var ymax=self.max(yvals);
 		ymax=ymax+self.percent(ymax,10,false);
 
-		var yaxisLabelMaxLength=ymax.toFixed(2).toString().length*fontSizePixel;
-		var xaxisLabelMaxLength=xmax.toFixed(2).toString().length*fontSizePixel;
-		console.log("yaxisLabelMaxLength :"+yaxisLabelMaxLength);
-		console.log("xaxisLabelMaxLength :"+xaxisLabelMaxLength);
+		var yaxisLabelMaxLength=ymax.toFixed(2).toString().length*fontSizePixelWidth;
+		var xaxisLabelMaxLength=xmax.toFixed(2).toString().length*fontSizePixelWidth;
+		//console.log("yaxisLabelMaxLength :"+yaxisLabelMaxLength);
+		//console.log("xaxisLabelMaxLength :"+xaxisLabelMaxLength);
 
 
 
-		var calculatedXorigin=self.vfd(yaxisLabelMaxLength+(fontSizePixel*2));
-		var calculatedYorigin=self.vfd(self.options.height-(fontSizePixel*4));
+		var calculatedXorigin=self.vfd(yaxisLabelMaxLength+(fontSizePixelWidth*2));
+		var calculatedYorigin=self.vfd(self.options.height-(fontSizePixelHeight*4));
 
 		var margin=10;
 
@@ -502,8 +505,8 @@ var kgg={
 	    
 	   
 
-	    var ylength=self.options.height-(margin+self.vfd(self.options.height-yorigin));
-	    var xlength=self.options.width-(xorigin+margin+xaxisLabelMaxLength);
+	    var ylength=self.vfd(self.options.height-(margin+self.vfd(self.options.height-yorigin)));
+	    var xlength=self.vfd(self.options.width-(xorigin+margin+xaxisLabelMaxLength));
 	    console.log("ylength :"+ylength);
 
 
@@ -516,8 +519,8 @@ var kgg={
 		//labelling the axes with axes names
 		if(self.options.columnTitles && self.options.columnTitles.length==2)
 		{
-			xlen=self.vfd(self.options.columnTitles[0].length*fontSizePixel);
-			ylen=self.vfd(self.options.columnTitles[1].length*fontSizePixel);
+			var xlen=self.vfd(self.options.columnTitles[0].length*fontSizePixelWidth);
+			var ylen=self.vfd(self.options.columnTitles[1].length*fontSizePixelWidth);
 
 			if(xlen<xlength)
 			{
@@ -527,9 +530,12 @@ var kgg={
 			}
 			else if(xlen>=xlength)
 			{
-				var strLen=parseInt(xlen/fontSizePixel);
-				self.options.columnTitles[0]=self.options.columnTitles[0].substring(0,strLen);
+				var strLen=parseInt(xlength/fontSizePixelWidth);
+				//console.log(strLen);
+				self.options.columnTitles[0]=self.options.columnTitles[0].substring(0,strLen)+"...";
+				//console.log(self.options.columnTitles[0]);
 				xaxisLabelxpos=xorigin;
+
 
 			}
 
@@ -540,13 +546,13 @@ var kgg={
 			}
 			else if(ylen>=ylength)
 			{
-				var strLen=parseInt(ylen/fontSizePixel);
-				self.options.columnTitles[1]=self.options.columnTitles[1].substring(0,strLen);
+				var strLen=parseInt(ylength/fontSizePixelWidth);
+				self.options.columnTitles[1]=self.options.columnTitles[1].substring(0,strLen)+"...";
 				yaxisLabelypos=yorigin;
 			}
 
-			xaxisLabelypos=self.options.height-fontSizePixel;
-			yaxisLabelxpos=fontSizePixel*2;
+			xaxisLabelypos=self.options.height-fontSizePixelWidth;
+			yaxisLabelxpos=fontSizePixelWidth*2;
 
 
 		}
@@ -568,8 +574,9 @@ var kgg={
 	    // drawing the axes
 
 	    //paint origin
+	    ctx.fillStyle = '#396bd5';
 	    ctx.beginPath();
-	    ctx.fillText('0', xorigin - 10, yorigin+10);
+	    ctx.fillText('0', xorigin - fontSizePixelWidth, yorigin+fontSizePixelHeight);
 	    ctx.stroke();
 	    ctx.closePath();
 
@@ -844,11 +851,11 @@ var kgg={
         	{
         		obj.options.tooltip=document.createElement("label");
         		$(obj.options.tooltip).appendTo(obj.$elem);
-        		$(obj.options.tooltip).css({'position': 'fixed','background-color':'#ffffff','border':'1px solid #396bd5'});
+        		$(obj.options.tooltip).css({'position': 'fixed','font-size':self.options.fontSize+'px','padding':'5px','color':'#396bd5','background-color':'#ffffff','border':'3px solid #396bd5','border-radius':'5px'});
         	}
-        	$(obj.options.tooltip).text("( "+xvals[index]+" , "+yvals[index]+" )");
+        	$(obj.options.tooltip).text(" "+xvals[index]+" , "+yvals[index]+" ");
         	$(obj.options.tooltip).show();
-        	$(obj.options.tooltip).css({'top': evt.clientY+'px','left': evt.clientX+'px'});
+        	$(obj.options.tooltip).css({'top': evt.clientY+'px','left': (evt.clientX+10)+'px'});
         }
         else
         {
@@ -876,9 +883,9 @@ var kgg={
         	{
         		obj.options.tooltip=document.createElement("label");
         		$(obj.options.tooltip).appendTo(obj.$elem);
-        		$(obj.options.tooltip).css({'position': 'fixed','background-color':'#ffffff','border':'1px solid #396bd5'});
+        		$(obj.options.tooltip).css({'position': 'fixed','font-size':self.options.fontSize+'px','padding':'5px','color':'#396bd5','background-color':'#ffffff','border':'3px solid #396bd5','border-radius':'5px'});
         	}
-        	$(obj.options.tooltip).text("( "+data[index][0]+" - "+data[index][1]+" )");
+        	$(obj.options.tooltip).text(" "+data[index][0]+" - "+data[index][1]+" ");
         	$(obj.options.tooltip).show();
         	$(obj.options.tooltip).css({'top': evt.clientY+'px','left': evt.clientX+'px'});
         }
@@ -985,7 +992,7 @@ var kgg={
 		
 		//self.$elem.children("table").css({'margin':'0 auto'});
 
-		self.$elem.children("table").css({'margin':'10px'});
+		self.$elem.children("table").css({'margin':'10px','border':'1px solid #eee','border-radius':'5px'});
 		self.$elem.children("label").css({'margin':'10px'});
 		self.$elem.width();
 		self.$elem.height(self.$elem.height()+self.$elem.children("table").height()+(self.$elem.children("label").height()*2));
@@ -995,6 +1002,11 @@ var kgg={
 	{
 		var canvas=self.$canvas;
 		var ctx = canvas.getContext('2d');
+		var fontSizePixel=self.options.fontSize;
+		ctx.font=fontSizePixel+"px Arial";
+		var fontSizePixelWidth=ctx.measureText("H").width;
+		var fontSizePixelHeight=fontSizePixel;
+
 
 		var xvals=new Array();
 		var yvals=new Array();
@@ -1017,33 +1029,100 @@ var kgg={
 		var ymax=self.max(yvals);
 		ymax=ymax+self.percent(ymax,10,false);
 
-		//console.log("xmax :"+xmax+" ymax :"+ymax);
-
-		var xorigin=self.vfd(self.options.width*0.20);
-	    var yorigin=self.vfd(self.options.height*0.80);
-	   // console.log("xorigin :"+xorigin+" yorigin:"+yorigin);
-
-	    var ylength=self.vfd(self.options.height*0.80)-self.vfd(self.options.height*0.20);
-	    var xlength=self.vfd(self.options.width*0.80)-self.vfd(self.options.width*0.20);
+		var yaxisLabelMaxLength=ymax.toFixed(2).toString().length*fontSizePixelWidth;
+		var xaxisLabelMaxLength=xmax.toFixed(2).toString().length*fontSizePixelWidth;
+		//console.log("yaxisLabelMaxLength :"+yaxisLabelMaxLength);
+		//console.log("xaxisLabelMaxLength :"+xaxisLabelMaxLength);
 
 
-	   // console.log("xlength :"+xlength+" ylength:"+ylength);
-	   // console.log("xmax :"+xmax+" ymax:"+ymax);
+
+		var calculatedXorigin=self.vfd(yaxisLabelMaxLength+(fontSizePixelWidth*2));
+		var calculatedYorigin=self.vfd(self.options.height-(fontSizePixelHeight*4));
+
+		var margin=10;
+
+
+		//var xorigin=self.vfd(self.options.width*0.20);
+	    //var yorigin=self.vfd(self.options.height*0.80);
+
+	    var xorigin=self.vfd(calculatedXorigin);
+	    var yorigin=self.vfd(calculatedYorigin);
+
+	    
+	   
+
+	    var ylength=self.vfd(self.options.height-(margin+self.vfd(self.options.height-yorigin)));
+	    var xlength=self.vfd(self.options.width-(xorigin+margin+xaxisLabelMaxLength));
+	    console.log("ylength :"+ylength);
+
+
+	    var xaxisLabelxpos=0;
+	    var xaxisLabelypos=0;
+
+	    var yaxisLabelxpos=0;
+	    var yaxisLabelypos=0;
+
+		//labelling the axes with axes names
+		if(self.options.columnTitles && self.options.columnTitles.length==2)
+		{
+			var xlen=self.vfd(self.options.columnTitles[0].length*fontSizePixelWidth);
+			var ylen=self.vfd(self.options.columnTitles[1].length*fontSizePixelWidth);
+
+			if(xlen<xlength)
+			{
+				xaxisLabelxpos=self.vfd(xorigin+(xlength*0.50));
+				xaxisLabelxpos=xaxisLabelxpos-parseInt(xlen*0.50);
+
+			}
+			else if(xlen>=xlength)
+			{
+				var strLen=parseInt(xlength/fontSizePixelWidth);
+				//console.log(strLen);
+				self.options.columnTitles[0]=self.options.columnTitles[0].substring(0,strLen)+"...";
+				//console.log(self.options.columnTitles[0]);
+				xaxisLabelxpos=xorigin;
+
+
+			}
+
+			if(ylen<ylength)
+			{
+				yaxisLabelypos=self.vfd(yorigin-(ylength*0.50));
+				yaxisLabelypos=yaxisLabelypos+parseInt(ylen*0.50);
+			}
+			else if(ylen>=ylength)
+			{
+				var strLen=parseInt(ylength/fontSizePixelWidth);
+				self.options.columnTitles[1]=self.options.columnTitles[1].substring(0,strLen)+"...";
+				yaxisLabelypos=yorigin;
+			}
+
+			xaxisLabelypos=self.options.height-fontSizePixelWidth;
+			yaxisLabelxpos=fontSizePixelWidth*2;
+
+
+		}
+
+
+
+
+
 
 		// drawing the axes
 		ctx.strokeStyle = '#396bd5';
 	    ctx.beginPath();
-	    ctx.moveTo(self.vfd(self.options.width*0.20), self.vfd(self.options.height*0.80));
-	    ctx.lineTo(self.vfd(self.options.width*0.80), self.vfd(self.options.height*0.80));
-	    ctx.moveTo(self.vfd(self.options.width*0.20), self.vfd(self.options.height*0.80));
-	    ctx.lineTo(self.vfd(self.options.width*0.20), self.vfd(self.options.height*0.20));
+	    ctx.moveTo(xorigin, yorigin);
+	    ctx.lineTo(xorigin+xlength, yorigin);
+	    ctx.moveTo(xorigin, yorigin);
+	    ctx.lineTo(xorigin, yorigin-ylength);
 	    ctx.stroke();
 	    ctx.closePath();
 	    // drawing the axes
 
 	    //paint origin
+	    ctx.fillStyle = '#396bd5';
 	    ctx.beginPath();
-	    ctx.fillText('0', xorigin - 10, yorigin+10);
+	    ctx.fillText('0', xorigin - fontSizePixelWidth, yorigin+fontSizePixelHeight);
 	    ctx.stroke();
 	    ctx.closePath();
 
@@ -1077,7 +1156,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(labelx, yorigin);
-			    ctx.lineTo(labelx, self.vfd(self.options.height*0.20));
+			    ctx.lineTo(labelx, yorigin-ylength);
 			    ctx.stroke();
 			    ctx.closePath();
 			    labelx+=self.percent(xlength,10,true);
@@ -1089,7 +1168,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(labelx, yorigin);
-			    ctx.lineTo(labelx, self.vfd(self.options.height*0.20));
+			    ctx.lineTo(labelx, yorigin-ylength);
 			    ctx.stroke();
 			    ctx.closePath();
 			}
@@ -1101,7 +1180,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(xorigin, labely);
-			    ctx.lineTo(self.vfd(self.options.width*0.80), labely);
+			    ctx.lineTo(xorigin+xlength, labely);
 			    ctx.stroke();
 			    ctx.closePath();
 			    labely-=self.percent(ylength,10,true);
@@ -1113,7 +1192,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(xorigin, labely);
-			    ctx.lineTo(self.vfd(self.options.width*0.80), labely);
+			    ctx.lineTo(xorigin+xlength, labely);
 			    ctx.stroke();
 			    ctx.closePath();
 			}
@@ -1128,10 +1207,10 @@ var kgg={
 		for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
 		{
 			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-		    ctx.fillText(i.toFixed(2).toString(), labelx, yorigin+15);
-		    ctx.stroke();
-		    ctx.closePath();
+			//ctx.beginPath();
+		    ///ctx.fillText(i.toFixed(2).toString(), labelx, yorigin+15);
+		    //ctx.stroke();
+		    //ctx.closePath();
 		    ctx.beginPath();
 		    ctx.fillRect(labelx-2, yorigin-2,4,4);
 		    ctx.stroke();
@@ -1143,26 +1222,25 @@ var kgg={
 		if(count<10)
 		{
 			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-		    ctx.fillText(xmax.toFixed(2).toString(), labelx, yorigin+15);
-		    ctx.stroke();
-		    ctx.closePath();
+			//ctx.beginPath();
+		    //ctx.fillText(xmax.toFixed(2).toString(), labelx, yorigin+15);
+		    //ctx.stroke();
+		    //ctx.closePath();
 		    ctx.beginPath();
 		    ctx.fillRect(labelx-2, yorigin-2,4,4);
 		    ctx.stroke();
 		    ctx.closePath();
 		}
 		count=0;
-
 		var yaxisSpacing=new Array();
 		for(i=self.percent(ymax,10,false);i<=ymax;i+=self.percent(ymax,10,false))
 		{
 			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-		    ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
-		    yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
-		    ctx.stroke();
-		    ctx.closePath();
+			//ctx.beginPath();
+		    //ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
+		    //yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
+		    //ctx.stroke();
+		    //ctx.closePath();
 		    ctx.beginPath();
 		    ctx.fillRect(xorigin-2, labely-2,4,4);
 		    ctx.stroke();
@@ -1174,37 +1252,38 @@ var kgg={
 		if(count<10)
 		{
 			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-		    ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
-		    yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
-		    ctx.stroke();
-		    ctx.closePath();
+			//ctx.beginPath();
+		    //ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
+		    // yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
+		    //ctx.stroke();
+		    //ctx.closePath();
 		    ctx.beginPath();
 		    ctx.fillRect(xorigin-2, labely-2,4,4);
 		    ctx.stroke();
 		    ctx.closePath();
 		}
 
-		
+
 		//labelling the axes with axes names
 		if(self.options.columnTitles && self.options.columnTitles.length==2)
 		{
-
+			//x axis
 			ctx.fillStyle = '#396bd5';
 			ctx.beginPath();
-		    ctx.fillText(self.options.columnTitles[0], self.vfd(self.options.width*0.30), self.vfd(self.options.height*0.90));
+		    ctx.fillText(self.options.columnTitles[0], xaxisLabelxpos, xaxisLabelypos);
 		    ctx.stroke();
 		    ctx.closePath();
 
 
 		   
-
+		    //y axis
 		    ctx.save();
-		    ctx.translate(self.max(yaxisSpacing)-self.vfd(self.options.height*0.05), self.vfd(self.options.height*0.70));
+		    ctx.translate(yaxisLabelxpos, yaxisLabelypos);
 			ctx.rotate(-Math.PI/2);
 		    ctx.fillText(self.options.columnTitles[1], 0, 0);
 		    ctx.restore();
 		}
+		
 		
 
 		
@@ -1396,7 +1475,7 @@ var kgg={
 		
 		
 		//self.$elem.children("table").css({'margin':'0 auto'});
-		self.$elem.children("table").css({'margin':'10px'});
+		self.$elem.children("table").css({'margin':'10px','border':'1px solid #eee','border-radius':'5px'});
 		self.$elem.children("label").css({'margin':'10px'});
 		self.$elem.width();
 		self.$elem.height(self.$elem.height()+q+10+(self.$elem.children("label").height()*2));
@@ -1432,7 +1511,8 @@ $.fn.kggraph.options={
 	connectPointsWithOrigin:false,
 	hasTrends:false,
 	plotPoints:[],
-	tooltip:null
+	tooltip:null,
+	fontSize:10
 };
 
 
