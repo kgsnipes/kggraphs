@@ -461,6 +461,8 @@ var kgg={
 	{
 		var canvas=self.$canvas;
 		var ctx = canvas.getContext('2d');
+		var fontSizePixel=10;
+		ctx.font=fontSizePixel+"px Arial";
 
 		var xvals=new Array();
 		var yvals=new Array();
@@ -471,32 +473,96 @@ var kgg={
 			yvals.push(data[i][1]);
 		}
 
-		//xvals=xvals.reverse();
-		//yvals=yvals.reverse();
+		
 
 		var xmax=self.max(xvals);
 		xmax=xmax+self.percent(xmax,10,false);
 		var ymax=self.max(yvals);
 		ymax=ymax+self.percent(ymax,10,false);
 
-		var xorigin=self.vfd(self.options.width*0.20);
-	    var yorigin=self.vfd(self.options.height*0.80);
-	   // console.log("xorigin :"+xorigin+" yorigin:"+yorigin);
-
-	    var ylength=self.vfd(self.options.height*0.80)-self.vfd(self.options.height*0.20);
-	    var xlength=self.vfd(self.options.width*0.80)-self.vfd(self.options.width*0.20);
+		var yaxisLabelMaxLength=ymax.toFixed(2).toString().length*fontSizePixel;
+		var xaxisLabelMaxLength=xmax.toFixed(2).toString().length*fontSizePixel;
+		console.log("yaxisLabelMaxLength :"+yaxisLabelMaxLength);
+		console.log("xaxisLabelMaxLength :"+xaxisLabelMaxLength);
 
 
-	   // console.log("xlength :"+xlength+" ylength:"+ylength);
-	   // console.log("xmax :"+xmax+" ymax:"+ymax);
+
+		var calculatedXorigin=self.vfd(yaxisLabelMaxLength+(fontSizePixel*2));
+		var calculatedYorigin=self.vfd(self.options.height-(fontSizePixel*4));
+
+		var margin=10;
+
+
+		//var xorigin=self.vfd(self.options.width*0.20);
+	    //var yorigin=self.vfd(self.options.height*0.80);
+
+	    var xorigin=self.vfd(calculatedXorigin);
+	    var yorigin=self.vfd(calculatedYorigin);
+
+	    
+	   
+
+	    var ylength=self.options.height-(margin+self.vfd(self.options.height-yorigin));
+	    var xlength=self.options.width-(xorigin+margin+xaxisLabelMaxLength);
+	    console.log("ylength :"+ylength);
+
+
+	    var xaxisLabelxpos=0;
+	    var xaxisLabelypos=0;
+
+	    var yaxisLabelxpos=0;
+	    var yaxisLabelypos=0;
+
+		//labelling the axes with axes names
+		if(self.options.columnTitles && self.options.columnTitles.length==2)
+		{
+			xlen=self.vfd(self.options.columnTitles[0].length*fontSizePixel);
+			ylen=self.vfd(self.options.columnTitles[1].length*fontSizePixel);
+
+			if(xlen<xlength)
+			{
+				xaxisLabelxpos=self.vfd(xorigin+(xlength*0.50));
+				xaxisLabelxpos=xaxisLabelxpos-parseInt(xlen*0.50);
+
+			}
+			else if(xlen>=xlength)
+			{
+				var strLen=parseInt(xlen/fontSizePixel);
+				self.options.columnTitles[0]=self.options.columnTitles[0].substring(0,strLen);
+				xaxisLabelxpos=xorigin;
+
+			}
+
+			if(ylen<ylength)
+			{
+				yaxisLabelypos=self.vfd(yorigin-(ylength*0.50));
+				yaxisLabelypos=yaxisLabelypos+parseInt(ylen*0.50);
+			}
+			else if(ylen>=ylength)
+			{
+				var strLen=parseInt(ylen/fontSizePixel);
+				self.options.columnTitles[1]=self.options.columnTitles[1].substring(0,strLen);
+				yaxisLabelypos=yorigin;
+			}
+
+			xaxisLabelypos=self.options.height-fontSizePixel;
+			yaxisLabelxpos=fontSizePixel*2;
+
+
+		}
+
+
+
+
+
 
 		// drawing the axes
 		ctx.strokeStyle = '#396bd5';
 	    ctx.beginPath();
-	    ctx.moveTo(self.vfd(self.options.width*0.20), self.vfd(self.options.height*0.80));
-	    ctx.lineTo(self.vfd(self.options.width*0.80), self.vfd(self.options.height*0.80));
-	    ctx.moveTo(self.vfd(self.options.width*0.20), self.vfd(self.options.height*0.80));
-	    ctx.lineTo(self.vfd(self.options.width*0.20), self.vfd(self.options.height*0.20));
+	    ctx.moveTo(xorigin, yorigin);
+	    ctx.lineTo(xorigin+xlength, yorigin);
+	    ctx.moveTo(xorigin, yorigin);
+	    ctx.lineTo(xorigin, yorigin-ylength);
 	    ctx.stroke();
 	    ctx.closePath();
 	    // drawing the axes
@@ -537,7 +603,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(labelx, yorigin);
-			    ctx.lineTo(labelx, self.vfd(self.options.height*0.20));
+			    ctx.lineTo(labelx, yorigin-ylength);
 			    ctx.stroke();
 			    ctx.closePath();
 			    labelx+=self.percent(xlength,10,true);
@@ -549,7 +615,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(labelx, yorigin);
-			    ctx.lineTo(labelx, self.vfd(self.options.height*0.20));
+			    ctx.lineTo(labelx, yorigin-ylength);
 			    ctx.stroke();
 			    ctx.closePath();
 			}
@@ -561,7 +627,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(xorigin, labely);
-			    ctx.lineTo(self.vfd(self.options.width*0.80), labely);
+			    ctx.lineTo(xorigin+xlength, labely);
 			    ctx.stroke();
 			    ctx.closePath();
 			    labely-=self.percent(ylength,10,true);
@@ -573,7 +639,7 @@ var kgg={
 				ctx.strokeStyle = '#eeeeee';
 			    ctx.beginPath();
 			    ctx.moveTo(xorigin, labely);
-			    ctx.lineTo(self.vfd(self.options.width*0.80), labely);
+			    ctx.lineTo(xorigin+xlength, labely);
 			    ctx.stroke();
 			    ctx.closePath();
 			}
@@ -588,10 +654,10 @@ var kgg={
 		for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
 		{
 			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-		    ctx.fillText(i.toFixed(2).toString(), labelx, yorigin+15);
-		    ctx.stroke();
-		    ctx.closePath();
+			//ctx.beginPath();
+		    ///ctx.fillText(i.toFixed(2).toString(), labelx, yorigin+15);
+		    //ctx.stroke();
+		    //ctx.closePath();
 		    ctx.beginPath();
 		    ctx.fillRect(labelx-2, yorigin-2,4,4);
 		    ctx.stroke();
@@ -603,10 +669,10 @@ var kgg={
 		if(count<10)
 		{
 			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-		    ctx.fillText(xmax.toFixed(2).toString(), labelx, yorigin+15);
-		    ctx.stroke();
-		    ctx.closePath();
+			//ctx.beginPath();
+		    //ctx.fillText(xmax.toFixed(2).toString(), labelx, yorigin+15);
+		    //ctx.stroke();
+		    //ctx.closePath();
 		    ctx.beginPath();
 		    ctx.fillRect(labelx-2, yorigin-2,4,4);
 		    ctx.stroke();
@@ -617,11 +683,11 @@ var kgg={
 		for(i=self.percent(ymax,10,false);i<=ymax;i+=self.percent(ymax,10,false))
 		{
 			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-		    ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
-		    yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
-		    ctx.stroke();
-		    ctx.closePath();
+			//ctx.beginPath();
+		    //ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
+		    //yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
+		    //ctx.stroke();
+		    //ctx.closePath();
 		    ctx.beginPath();
 		    ctx.fillRect(xorigin-2, labely-2,4,4);
 		    ctx.stroke();
@@ -633,11 +699,11 @@ var kgg={
 		if(count<10)
 		{
 			ctx.fillStyle = '#396bd5';
-			ctx.beginPath();
-		    ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
-		     yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
-		    ctx.stroke();
-		    ctx.closePath();
+			//ctx.beginPath();
+		    //ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
+		    // yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
+		    //ctx.stroke();
+		    //ctx.closePath();
 		    ctx.beginPath();
 		    ctx.fillRect(xorigin-2, labely-2,4,4);
 		    ctx.stroke();
@@ -648,18 +714,18 @@ var kgg={
 		//labelling the axes with axes names
 		if(self.options.columnTitles && self.options.columnTitles.length==2)
 		{
-
+			//x axis
 			ctx.fillStyle = '#396bd5';
 			ctx.beginPath();
-		    ctx.fillText(self.options.columnTitles[0], self.vfd(self.options.width*0.30), self.vfd(self.options.height*0.90));
+		    ctx.fillText(self.options.columnTitles[0], xaxisLabelxpos, xaxisLabelypos);
 		    ctx.stroke();
 		    ctx.closePath();
 
 
 		   
-
+		    //y axis
 		    ctx.save();
-		    ctx.translate(self.max(yaxisSpacing)-self.vfd(self.options.height*0.05), self.vfd(self.options.height*0.70));
+		    ctx.translate(yaxisLabelxpos, yaxisLabelypos);
 			ctx.rotate(-Math.PI/2);
 		    ctx.fillText(self.options.columnTitles[1], 0, 0);
 		    ctx.restore();
