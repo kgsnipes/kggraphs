@@ -1067,6 +1067,8 @@ var kgg={
 		ctx.font=fontSizePixel+"px Arial";
 		var fontSizePixelWidth=ctx.measureText("H").width;
 		var fontSizePixelHeight=fontSizePixel;
+		var xaxistotallabelinglength=0;
+		var xaxisslantflag=false;
 
 
 		var xvals=new Array();
@@ -1098,7 +1100,7 @@ var kgg={
 
 
 		var calculatedXorigin=self.vfd(yaxisLabelMaxLength+(fontSizePixelWidth*2));
-		var calculatedYorigin=self.vfd(self.options.height-(fontSizePixelHeight*4));
+		var calculatedYorigin=self.vfd(self.options.height-xaxisLabelMaxLength);
 
 		var margin=10;
 
@@ -1114,7 +1116,35 @@ var kgg={
 
 	    var ylength=self.vfd(self.options.height-(margin+self.vfd(self.options.height-yorigin)));
 	    var xlength=self.vfd(self.options.width-(xorigin+margin+xaxisLabelMaxLength));
-	    console.log("ylength :"+ylength);
+	    //console.log("ylength :"+ylength);
+
+	   
+	    var xxr=0;
+	    for(xxr=self.percent(xmax,10,false);xxr<=xmax;xxr+=self.percent(xmax,10,false))
+			{
+				
+				xaxistotallabelinglength+=self.vfd(ctx.measureText(xxr.toFixed(2).toString()).width);
+			   
+			   
+			}
+			xaxistotallabelinglength+=self.vfd(ctx.measureText(xxr.toFixed(2).toString()).width);
+			
+
+
+	    if(xaxistotallabelinglength>xlength)
+	    {
+	    	
+			 calculatedYorigin=self.vfd(self.options.height-(xaxisLabelMaxLength*1.5));
+
+		     xorigin=self.vfd(calculatedXorigin);
+		     yorigin=self.vfd(calculatedYorigin);
+
+		      ylength=self.vfd(self.options.height-(margin+self.vfd(self.options.height-yorigin)));
+	    	 xlength=self.vfd(self.options.width-(xorigin+margin+xaxisLabelMaxLength));
+
+	    	 xaxisslantflag=true;
+
+	    }
 
 
 	    var xaxisLabelxpos=0;
@@ -1209,8 +1239,8 @@ var kgg={
 		//draw grids if requested
 		if(self.options.useGrids)
 		{
-			var labelx=xorigin+self.percent(xlength,10,true);
-			var labely=yorigin-self.percent(ylength,10,true);
+			var labelx=xorigin+self.percent(xlength,10,false);
+			var labely=yorigin-self.percent(ylength,10,false);
 			var count=0;
 			for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
 			{
@@ -1220,7 +1250,7 @@ var kgg={
 			    ctx.lineTo(labelx, yorigin-ylength);
 			    ctx.stroke();
 			    ctx.closePath();
-			    labelx+=self.percent(xlength,10,true);
+			    labelx+=self.percent(xlength,10,false);
 			    count++;
 			}
 
@@ -1244,7 +1274,7 @@ var kgg={
 			    ctx.lineTo(xorigin+xlength, labely);
 			    ctx.stroke();
 			    ctx.closePath();
-			    labely-=self.percent(ylength,10,true);
+			    labely-=self.percent(ylength,10,false);
 			    count++;
 			}
 
@@ -1262,62 +1292,94 @@ var kgg={
 
 
 		//label the axes
-		var labelx=xorigin+self.percent(xlength,10,true);
-		var labely=yorigin-self.percent(ylength,10,true);
+		var labelx=xorigin+self.percent(xlength,10,false);
+		var labely=yorigin-self.percent(ylength,10,false);
 		var count=0;
-		for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
-		{
-			ctx.fillStyle = '#396bd5';
-			//ctx.beginPath();
-		    ///ctx.fillText(i.toFixed(2).toString(), labelx, yorigin+15);
-		    //ctx.stroke();
-		    //ctx.closePath();
-		    ctx.beginPath();
-		    ctx.fillRect(labelx-2, yorigin-2,4,4);
-		    ctx.stroke();
-		    ctx.closePath();
-		    labelx+=self.percent(xlength,10,true);
-		    count++;
-		}
 		
-		if(count<10)
-		{
-			ctx.fillStyle = '#396bd5';
-			//ctx.beginPath();
-		    //ctx.fillText(xmax.toFixed(2).toString(), labelx, yorigin+15);
-		    //ctx.stroke();
-		    //ctx.closePath();
-		    ctx.beginPath();
-		    ctx.fillRect(labelx-2, yorigin-2,4,4);
-		    ctx.stroke();
-		    ctx.closePath();
-		}
+			for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
+			{
+				ctx.fillStyle = '#396bd5';
+
+				if(xaxisslantflag)
+				{
+					ctx.save();
+				    ctx.translate(labelx-(xaxisLabelMaxLength*0.5), yorigin+15+(xaxisLabelMaxLength*0.5));
+					ctx.rotate(-Math.PI/4);
+				    ctx.fillText(i.toFixed(2).toString(), 0, 0);
+				    ctx.restore();
+				}
+				else
+				{
+					ctx.beginPath();
+			    	ctx.fillText(i.toFixed(2).toString(), labelx, yorigin+15);
+			   	 	ctx.stroke();
+			    	ctx.closePath();
+				}
+				
+			    ctx.beginPath();
+			    ctx.fillRect(labelx-2, yorigin-2,4,4);
+			    ctx.stroke();
+			    ctx.closePath();
+			   // console.log("labelx "+labelx+" xlength"+xlength );
+
+			    labelx+=self.percent(xlength,10,false);
+			    count++;
+			}
+			
+			if(count<10)
+			{
+				// console.log("labelx "+labelx+" xlength"+xlength );
+				ctx.fillStyle = '#396bd5';
+
+				if(xaxisslantflag)
+				{
+					ctx.save();
+				    ctx.translate(labelx-(xaxisLabelMaxLength*0.5), yorigin+15+(xaxisLabelMaxLength*0.5));
+					ctx.rotate(-Math.PI/4);
+				    ctx.fillText(xmax.toFixed(2).toString(), 0, 0);
+				    ctx.restore();
+				}
+				else
+				{
+					ctx.beginPath();
+				    ctx.fillText(xmax.toFixed(2).toString(), labelx, yorigin+15);
+				    ctx.stroke();
+				    ctx.closePath();
+				}
+				
+			    ctx.beginPath();
+			    ctx.fillRect(labelx, yorigin-2,4,4);
+			    ctx.stroke();
+			    ctx.closePath();
+			}
+		
+		
 		count=0;
 		var yaxisSpacing=new Array();
 		for(i=self.percent(ymax,10,false);i<=ymax;i+=self.percent(ymax,10,false))
 		{
 			ctx.fillStyle = '#396bd5';
-			//ctx.beginPath();
-		    //ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
-		    //yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
-		    //ctx.stroke();
-		    //ctx.closePath();
+			ctx.beginPath();
+		    ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
+		    yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
+		    ctx.stroke();
+		    ctx.closePath();
 		    ctx.beginPath();
 		    ctx.fillRect(xorigin-2, labely-2,4,4);
 		    ctx.stroke();
 		    ctx.closePath();
-		    labely-=self.percent(ylength,10,true);
+		    labely-=self.percent(ylength,10,false);
 		    ++count;
 		}
 
 		if(count<10)
 		{
 			ctx.fillStyle = '#396bd5';
-			//ctx.beginPath();
-		    //ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
-		    // yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
-		    //ctx.stroke();
-		    //ctx.closePath();
+			ctx.beginPath();
+		    ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
+		     yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
+		    ctx.stroke();
+		    ctx.closePath();
 		    ctx.beginPath();
 		    ctx.fillRect(xorigin-2, labely-2,4,4);
 		    ctx.stroke();
@@ -1344,7 +1406,6 @@ var kgg={
 		    ctx.fillText(self.options.columnTitles[1], 0, 0);
 		    ctx.restore();
 		}
-		
 		
 
 		
