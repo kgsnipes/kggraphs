@@ -466,7 +466,7 @@ var kgg={
 		var fontSizePixelWidth=ctx.measureText("H").width;
 		var fontSizePixelHeight=fontSizePixel;
 		var xaxistotallabelinglength=0;
-		//console.log("fontSizePixelHeight :"+fontSizePixelHeight);
+		var xaxisslantflag=false;
 		var xvals=new Array();
 		var yvals=new Array();
 
@@ -510,7 +510,7 @@ var kgg={
 	    var xlength=self.vfd(self.options.width-(xorigin+margin+xaxisLabelMaxLength));
 	    //console.log("ylength :"+ylength);
 
-	   /*
+	   
 	    var xxr=0;
 	    for(xxr=self.percent(xmax,10,false);xxr<=xmax;xxr+=self.percent(xmax,10,false))
 			{
@@ -526,7 +526,7 @@ var kgg={
 	    if(xaxistotallabelinglength>xlength)
 	    {
 	    	
-			 calculatedYorigin=self.vfd(self.options.height-xaxisLabelMaxLength*2);
+			 calculatedYorigin=self.vfd(self.options.height-(xaxisLabelMaxLength*1.5));
 
 		     xorigin=self.vfd(calculatedXorigin);
 		     yorigin=self.vfd(calculatedYorigin);
@@ -534,8 +534,10 @@ var kgg={
 		      ylength=self.vfd(self.options.height-(margin+self.vfd(self.options.height-yorigin)));
 	    	 xlength=self.vfd(self.options.width-(xorigin+margin+xaxisLabelMaxLength));
 
+	    	 xaxisslantflag=true;
+
 	    }
-*/
+
 
 	    var xaxisLabelxpos=0;
 	    var xaxisLabelypos=0;
@@ -629,8 +631,8 @@ var kgg={
 		//draw grids if requested
 		if(self.options.useGrids)
 		{
-			var labelx=xorigin+self.percent(xlength,10,true);
-			var labely=yorigin-self.percent(ylength,10,true);
+			var labelx=xorigin+self.percent(xlength,10,false);
+			var labely=yorigin-self.percent(ylength,10,false);
 			var count=0;
 			for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
 			{
@@ -640,7 +642,7 @@ var kgg={
 			    ctx.lineTo(labelx, yorigin-ylength);
 			    ctx.stroke();
 			    ctx.closePath();
-			    labelx+=self.percent(xlength,10,true);
+			    labelx+=self.percent(xlength,10,false);
 			    count++;
 			}
 
@@ -664,7 +666,7 @@ var kgg={
 			    ctx.lineTo(xorigin+xlength, labely);
 			    ctx.stroke();
 			    ctx.closePath();
-			    labely-=self.percent(ylength,10,true);
+			    labely-=self.percent(ylength,10,false);
 			    count++;
 			}
 
@@ -689,15 +691,28 @@ var kgg={
 			for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
 			{
 				ctx.fillStyle = '#396bd5';
-				ctx.beginPath();
-			    ctx.fillText(i.toFixed(2).toString(), labelx, yorigin+15);
-			    ctx.stroke();
-			    ctx.closePath();
+
+				if(xaxisslantflag)
+				{
+					ctx.save();
+				    ctx.translate(labelx-(xaxisLabelMaxLength*0.5), yorigin+15+(xaxisLabelMaxLength*0.5));
+					ctx.rotate(-Math.PI/4);
+				    ctx.fillText(i.toFixed(2).toString(), 0, 0);
+				    ctx.restore();
+				}
+				else
+				{
+					ctx.beginPath();
+			    	ctx.fillText(i.toFixed(2).toString(), labelx, yorigin+15);
+			   	 	ctx.stroke();
+			    	ctx.closePath();
+				}
+				
 			    ctx.beginPath();
 			    ctx.fillRect(labelx-2, yorigin-2,4,4);
 			    ctx.stroke();
 			    ctx.closePath();
-			    console.log("labelx "+labelx+" xlength"+xlength );
+			   // console.log("labelx "+labelx+" xlength"+xlength );
 
 			    labelx+=self.percent(xlength,10,false);
 			    count++;
@@ -705,12 +720,25 @@ var kgg={
 			
 			if(count<10)
 			{
-				 console.log("labelx "+labelx+" xlength"+xlength );
+				// console.log("labelx "+labelx+" xlength"+xlength );
 				ctx.fillStyle = '#396bd5';
-				ctx.beginPath();
-			    ctx.fillText(xmax.toFixed(2).toString(), labelx, yorigin+15);
-			    ctx.stroke();
-			    ctx.closePath();
+
+				if(xaxisslantflag)
+				{
+					ctx.save();
+				    ctx.translate(labelx-(xaxisLabelMaxLength*0.5), yorigin+15+(xaxisLabelMaxLength*0.5));
+					ctx.rotate(-Math.PI/4);
+				    ctx.fillText(xmax.toFixed(2).toString(), 0, 0);
+				    ctx.restore();
+				}
+				else
+				{
+					ctx.beginPath();
+				    ctx.fillText(xmax.toFixed(2).toString(), labelx, yorigin+15);
+				    ctx.stroke();
+				    ctx.closePath();
+				}
+				
 			    ctx.beginPath();
 			    ctx.fillRect(labelx, yorigin-2,4,4);
 			    ctx.stroke();
