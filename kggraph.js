@@ -47,13 +47,13 @@ var kgg={
 			
 			self.drawPieChart(self.options.data);
 		}
-		else if(self.options.type=='point chart' && !self.options.hasTrends)
+		else if(self.options.type=='point chart' && self.options.dataTypes[0]=='number' && self.options.dataTypes[1]=='number' && !self.options.hasTrends)
 		{
 
 			
 			self.drawPointChart(self.options.data);
 		}
-		else if(self.options.type=='point chart' && self.options.hasTrends)
+		else if(self.options.type=='point chart' && self.options.dataTypes[0]=='number' && self.options.dataTypes[1]=='number' && self.options.hasTrends)
 		{
 
 			
@@ -1656,6 +1656,7 @@ $.fn.kggraph.options={
 	type:'pie chart',
 	title:'sample  chart',
 	data:[],
+	dataTypes:['number','number'],
 	columnTitles:[],
 	trendTitles:[],
 	colors:[],
