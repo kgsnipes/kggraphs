@@ -496,7 +496,7 @@ var kgg={
 			toFixedPoint=v.substring(v.indexOf(".")+1,v.length).length+1;
 		}
 
-		console.log("toFixedPoint"+toFixedPoint);
+	//	console.log("toFixedPoint"+toFixedPoint);
 		xmax=xmax+self.percent(xmax,10,false);
 		ymax=ymax+self.percent(ymax,10,false);
 
@@ -1086,7 +1086,7 @@ var kgg={
 		var fontSizePixelHeight=fontSizePixel;
 		var xaxistotallabelinglength=0;
 		var xaxisslantflag=false;
-
+		var toFixedPoint=2;
 
 		var xvals=new Array();
 		var yvals=new Array();
@@ -1105,12 +1105,27 @@ var kgg={
 		
 
 		var xmax=self.max(xvals);
-		xmax=xmax+self.percent(xmax,10,false);
+		
 		var ymax=self.max(yvals);
+		
+		if(xmax>0 && xmax<1)
+		{
+			v=xmax.toString();
+			toFixedPoint=v.substring(v.indexOf(".")+1,v.length).length+1;
+		}
+
+		if(ymax>0 && ymax<1)
+		{
+			v=ymax.toString();
+			toFixedPoint=v.substring(v.indexOf(".")+1,v.length).length+1;
+		}
+
+		//console.log("toFixedPoint"+toFixedPoint);
+		xmax=xmax+self.percent(xmax,10,false);
 		ymax=ymax+self.percent(ymax,10,false);
 
-		var yaxisLabelMaxLength=ymax.toFixed(2).toString().length*fontSizePixelWidth;
-		var xaxisLabelMaxLength=xmax.toFixed(2).toString().length*fontSizePixelWidth;
+		var yaxisLabelMaxLength=ymax.toFixed(toFixedPoint).toString().length*fontSizePixelWidth;
+		var xaxisLabelMaxLength=xmax.toFixed(toFixedPoint).toString().length*fontSizePixelWidth;
 		//console.log("yaxisLabelMaxLength :"+yaxisLabelMaxLength);
 		//console.log("xaxisLabelMaxLength :"+xaxisLabelMaxLength);
 
@@ -1140,11 +1155,11 @@ var kgg={
 	    for(xxr=self.percent(xmax,10,false);xxr<=xmax;xxr+=self.percent(xmax,10,false))
 			{
 				
-				xaxistotallabelinglength+=self.vfd(ctx.measureText(xxr.toFixed(2).toString()).width);
+				xaxistotallabelinglength+=self.vfd(ctx.measureText(xxr.toFixed(toFixedPoint).toString()).width);
 			   
 			   
 			}
-			xaxistotallabelinglength+=self.vfd(ctx.measureText(xxr.toFixed(2).toString()).width);
+			xaxistotallabelinglength+=self.vfd(ctx.measureText(xxr.toFixed(toFixedPoint).toString()).width);
 			
 
 
@@ -1322,13 +1337,13 @@ var kgg={
 					ctx.save();
 				    ctx.translate(labelx-(xaxisLabelMaxLength*0.5), yorigin+15+(xaxisLabelMaxLength*0.5));
 					ctx.rotate(-Math.PI/4);
-				    ctx.fillText(i.toFixed(2).toString(), 0, 0);
+				    ctx.fillText(i.toFixed(toFixedPoint).toString(), 0, 0);
 				    ctx.restore();
 				}
 				else
 				{
 					ctx.beginPath();
-			    	ctx.fillText(i.toFixed(2).toString(), labelx, yorigin+15);
+			    	ctx.fillText(i.toFixed(toFixedPoint).toString(), labelx, yorigin+15);
 			   	 	ctx.stroke();
 			    	ctx.closePath();
 				}
@@ -1353,13 +1368,13 @@ var kgg={
 					ctx.save();
 				    ctx.translate(labelx-(xaxisLabelMaxLength*0.5), yorigin+15+(xaxisLabelMaxLength*0.5));
 					ctx.rotate(-Math.PI/4);
-				    ctx.fillText(xmax.toFixed(2).toString(), 0, 0);
+				    ctx.fillText(xmax.toFixed(toFixedPoint).toString(), 0, 0);
 				    ctx.restore();
 				}
 				else
 				{
 					ctx.beginPath();
-				    ctx.fillText(xmax.toFixed(2).toString(), labelx, yorigin+15);
+				    ctx.fillText(xmax.toFixed(toFixedPoint).toString(), labelx, yorigin+15);
 				    ctx.stroke();
 				    ctx.closePath();
 				}
@@ -1377,7 +1392,7 @@ var kgg={
 		{
 			ctx.fillStyle = '#396bd5';
 			ctx.beginPath();
-		    ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
+		    ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(toFixedPoint).toString().length*6), labely+5);
 		    yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
 		    ctx.stroke();
 		    ctx.closePath();
@@ -1393,7 +1408,7 @@ var kgg={
 		{
 			ctx.fillStyle = '#396bd5';
 			ctx.beginPath();
-		    ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(2).toString().length*6), labely+5);
+		    ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(toFixedPoint).toString().length*6), labely+5);
 		     yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
 		    ctx.stroke();
 		    ctx.closePath();
