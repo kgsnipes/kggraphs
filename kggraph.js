@@ -23,6 +23,8 @@ var kgg={
 		self=this;
 		self.obj=self;
 		self.$elem=$(elem);
+
+		//setting the styles and appending canvas to the div tag
 		self.$elem.css({'padding':'10px'});
 		self.options=$.extend({},$.fn.kggraph.options,options);
 
@@ -58,6 +60,30 @@ var kgg={
 
 			
 			self.drawPointChartWithTrends(self.options.data);
+		} 
+		else if(self.options.type=='point chart' && self.options.dataTypes[0]=='string' && self.options.dataTypes[1]=='number' && !self.options.hasTrends)
+		{
+
+			
+			self.drawPointChartWithTextData(self.options.data,'x');
+		}
+		else if(self.options.type=='point chart' && self.options.dataTypes[0]=='number' && self.options.dataTypes[1]=='string' && !self.options.hasTrends)
+		{
+
+			
+			self.drawPointChartWithTextData(self.options.data,'y');
+		}
+		else if(self.options.type=='point chart' && self.options.dataTypes[0]=='number' && self.options.dataTypes[1]=='string' && self.options.hasTrends)
+		{
+
+			
+			self.drawPointChartWithTrendsOfText(self.options.data,'y');
+		}
+		else if(self.options.type=='point chart' && self.options.dataTypes[0]=='string' && self.options.dataTypes[1]=='number' && self.options.hasTrends)
+		{
+
+			
+			self.drawPointChartWithTrendsOfText(self.options.data,'x');
 		} 
 
 
@@ -456,6 +482,729 @@ var kgg={
 		self.$elem.width();
 		self.$elem.height(self.$elem.height()+self.$elem.children("table").height()+(self.$elem.children("label").height()*2));
 
+	},
+	drawPointChartWithTextData:function(data,axes)
+	{
+		var canvas=self.$canvas;
+		var ctx = canvas.getContext('2d');
+		var fontSizePixel=self.options.fontSize;
+		ctx.font=fontSizePixel+"px Arial";
+		var fontSizePixelWidth=ctx.measureText("H").width;
+		var fontSizePixelHeight=fontSizePixel;
+		var xaxistotallabelinglength=0;
+		var xaxisslantflag=false;
+		var xvals=new Array();
+		var yvals=new Array();
+		var toFixedPoint=2;
+		var xIsText=true;
+
+		if(axes=='y')
+		{
+			xIsText=false;
+		}
+
+		for(i=0;i<data.length;i++)
+		{
+			xvals.push(data[i][0]);
+			yvals.push(data[i][1]);
+			
+		}
+
+		var xmax=0;
+		var ymax=0;
+		if(xIsText)
+		{
+			ymax=self.max(yvals);
+			
+		}
+		else
+		{
+			xmax=self.max(xvals);
+		}
+		
+		if(xIsText)
+		{
+			if(ymax>0 && ymax<1)
+			{
+				v=ymax.toString();
+				toFixedPoint=v.substring(v.indexOf(".")+1,v.length).length+1;
+			}
+
+		}
+		else
+		{
+			if(xmax>0 && xmax<1)
+			{
+				v=xmax.toString();
+				toFixedPoint=v.substring(v.indexOf(".")+1,v.length).length+1;
+			}
+		}
+		
+
+		
+	//	console.log("toFixedPoint"+toFixedPoint);
+	if(xIsText)
+	{
+		//xmax=xmax+self.percent(xmax,10,false);
+		ymax=ymax+self.percent(ymax,10,false);
+	}
+	else
+	{
+		xmax=xmax+self.percent(xmax,10,false);
+		//ymax=ymax+self.percent(ymax,10,false);
+	}
+		
+
+		var yaxisLabelMaxLength=0;
+		var xaxisLabelMaxLength=0;
+	if(xIsText)
+	{
+		xaxisLabelMaxLength=xvals[0].length*fontSizePixelWidth;
+		for(i=0;i<xvals.length;i++)
+		{
+			if(xaxisLabelMaxLength<(xvals[i].length*fontSizePixelWidth))
+			{
+				xaxisLabelMaxLength=xvals[i].length*fontSizePixelWidth;
+			}
+		}
+
+		if(xaxisLabelMaxLength/fontSizePixelWidth<4)
+		{
+			xaxisLabelMaxLength=5*fontSizePixelWidth;
+		}
+		yaxisLabelMaxLength=ymax.toFixed(toFixedPoint).toString().length*fontSizePixelWidth;
+		
+	}
+	else
+	{
+
+		yaxisLabelMaxLength=yvals[0].length*fontSizePixelWidth;
+		for(i=0;i<yvals.length;i++)
+		{
+			if(yaxisLabelMaxLength<(yvals[i].length*fontSizePixelWidth))
+			{
+				yaxisLabelMaxLength=yvals[i].length*fontSizePixelWidth;
+			}
+		}
+		
+		
+		 xaxisLabelMaxLength=xmax.toFixed(toFixedPoint).toString().length*fontSizePixelWidth;
+	}
+
+		
+
+		var calculatedXorigin=self.vfd(yaxisLabelMaxLength+(fontSizePixelWidth*2));
+		var calculatedYorigin=self.vfd(self.options.height-xaxisLabelMaxLength);
+
+		
+
+		var margin=10;
+
+
+		//var xorigin=self.vfd(self.options.width*0.20);
+	    //var yorigin=self.vfd(self.options.height*0.80);
+		
+	    var xorigin=self.vfd(calculatedXorigin);
+	    var yorigin=self.vfd(calculatedYorigin);
+	    //console.log("xorigin :"+xorigin+" yorigin"+yorigin);
+
+	    
+	   
+
+	    var ylength=self.vfd(self.options.height-(margin+self.vfd(self.options.height-yorigin)));
+	    var xlength=self.vfd(self.options.width-(xorigin+margin+xaxisLabelMaxLength));
+	    //console.log("ylength :"+ylength);
+
+	   
+	    var xxr=0;
+	    if(xIsText)
+	    {
+
+		    for(i=0;i<xvals.length;i++)
+			{
+				
+					xaxistotallabelinglength+=self.vfd(ctx.measureText(xvals[i]).width);
+				
+			}
+			//xaxistotallabelinglength+=self.vfd(ctx.measureText(xxr.toFixed(toFixedPoint).toString()).width);
+	    }
+	    else
+	    {
+	    	for(xxr=self.percent(xmax,10,false);xxr<=xmax;xxr+=self.percent(xmax,10,false))
+			{
+				
+				xaxistotallabelinglength+=self.vfd(ctx.measureText(xxr.toFixed(toFixedPoint).toString()).width);
+			   
+			   
+			}
+			xaxistotallabelinglength+=self.vfd(ctx.measureText(xxr.toFixed(toFixedPoint).toString()).width);
+	    }
+			
+
+
+
+	    if(xaxistotallabelinglength>xlength)
+	    {
+	    	
+			 calculatedYorigin=self.vfd(self.options.height-(xaxisLabelMaxLength*1.5));
+
+		     xorigin=self.vfd(calculatedXorigin);
+		     yorigin=self.vfd(calculatedYorigin);
+
+		      ylength=self.vfd(self.options.height-(margin+self.vfd(self.options.height-yorigin)));
+	    	 xlength=self.vfd(self.options.width-(xorigin+margin+xaxisLabelMaxLength));
+
+	    	 xaxisslantflag=true;
+
+	    }
+
+
+	    var xaxisLabelxpos=0;
+	    var xaxisLabelypos=0;
+
+	    var yaxisLabelxpos=0;
+	    var yaxisLabelypos=0;
+
+		//labelling the axes with axes names
+		if(self.options.columnTitles && self.options.columnTitles.length==2)
+		{
+			var xlen=self.vfd(self.options.columnTitles[0].length*fontSizePixelWidth);
+			var ylen=self.vfd(self.options.columnTitles[1].length*fontSizePixelWidth);
+
+			if(xlen<xlength)
+			{
+				xaxisLabelxpos=self.vfd(xorigin+(xlength*0.50));
+				xaxisLabelxpos=xaxisLabelxpos-parseInt(xlen*0.50);
+
+			}
+			else if(xlen>=xlength)
+			{
+				var strLen=parseInt(xlength/fontSizePixelWidth);
+				//console.log(strLen);
+				self.options.columnTitles[0]=self.options.columnTitles[0].substring(0,strLen)+"...";
+				//console.log(self.options.columnTitles[0]);
+				xaxisLabelxpos=xorigin;
+
+
+			}
+
+			if(ylen<ylength)
+			{
+				yaxisLabelypos=self.vfd(yorigin-(ylength*0.50));
+				yaxisLabelypos=yaxisLabelypos+parseInt(ylen*0.50);
+			}
+			else if(ylen>=ylength)
+			{
+				var strLen=parseInt(ylength/fontSizePixelWidth);
+				self.options.columnTitles[1]=self.options.columnTitles[1].substring(0,strLen)+"...";
+				yaxisLabelypos=yorigin;
+			}
+
+			xaxisLabelypos=self.options.height-fontSizePixelWidth;
+			yaxisLabelxpos=fontSizePixelWidth*2;
+
+
+		}
+
+
+
+
+
+
+		// drawing the axes
+		ctx.strokeStyle = '#396bd5';
+	    ctx.beginPath();
+	    ctx.moveTo(xorigin, yorigin);
+	    ctx.lineTo(xorigin+xlength, yorigin);
+	    ctx.moveTo(xorigin, yorigin);
+	    ctx.lineTo(xorigin, yorigin-ylength);
+	    ctx.stroke();
+	    ctx.closePath();
+	    // drawing the axes
+
+	    //paint origin
+	    ctx.fillStyle = '#396bd5';
+	    ctx.beginPath();
+	    ctx.fillText('0', xorigin - fontSizePixelWidth, yorigin+fontSizePixelHeight);
+	    ctx.stroke();
+	    ctx.closePath();
+
+
+	    if(self.options.colors && self.options.colors.length>0)
+		{
+			colors=self.options.colors;
+		}
+		else
+		{
+			
+			if(self.options.useRGBAColorScheme)
+			{
+				colors=self.colorShades(3,data.length);
+			}
+			else
+			{
+				colors=self.getColors(data.length);
+			}
+			
+		}
+
+		//draw grids if requested
+		if(self.options.useGrids)
+		{
+			if(xIsText)
+			{
+				var xpercentageGap=self.percentage(xlength,xlength/xvals.length);
+				var labelx=xorigin+self.percent(xlength,xpercentageGap,false);
+				var labely=yorigin-self.percent(ylength,10,false);
+				var count=0;
+				var i=0;
+				for(i=labelx;i<=(xorigin+xlength);i+=self.percent(xlength,xpercentageGap,false))
+				{
+					ctx.strokeStyle = '#eeeeee';
+				    ctx.beginPath();
+				    ctx.moveTo(i, yorigin);
+				    ctx.lineTo(i, yorigin-ylength);
+				    ctx.stroke();
+				    ctx.closePath();
+				   // labelx+=self.percent(xlength,10,false);
+				    count++;
+				}
+
+				if(count<(xvals.length))
+				{
+					ctx.strokeStyle = '#eeeeee';
+				    ctx.beginPath();
+				    ctx.moveTo(i, yorigin);
+				    ctx.lineTo(i, yorigin-ylength);
+				    ctx.stroke();
+				    ctx.closePath();
+				}
+
+				count=0;
+				i=0;
+				for(i=self.percent(ymax,10,false);i<=ymax;i+=self.percent(ymax,10,false))
+				{
+					ctx.strokeStyle = '#eeeeee';
+				    ctx.beginPath();
+				    ctx.moveTo(xorigin, labely);
+				    ctx.lineTo(xorigin+xlength, labely);
+				    ctx.stroke();
+				    ctx.closePath();
+				    labely-=self.percent(ylength,10,false);
+				    count++;
+				}
+
+				if(count<10)
+				{
+					ctx.strokeStyle = '#eeeeee';
+				    ctx.beginPath();
+				    ctx.moveTo(xorigin, labely);
+				    ctx.lineTo(xorigin+xlength, labely);
+				    ctx.stroke();
+				    ctx.closePath();
+				}
+			}
+			else
+			{
+				var ypercentageGap=self.percentage(ylength,ylength/yvals.length);
+				var labelx=xorigin+self.percent(xlength,10,false);
+				var labely=yorigin-self.percent(ylength,ypercentageGap,false);
+				var count=0;
+				var i=0;
+				for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
+				{
+					ctx.strokeStyle = '#eeeeee';
+				    ctx.beginPath();
+				    ctx.moveTo(labelx, yorigin);
+				    ctx.lineTo(labelx, yorigin-ylength);
+				    ctx.stroke();
+				    ctx.closePath();
+				    labelx+=self.percent(xlength,10,false);
+				    count++;
+				}
+
+				if(count<10)
+				{
+					ctx.strokeStyle = '#eeeeee';
+				    ctx.beginPath();
+				    ctx.moveTo(labelx, yorigin);
+				    ctx.lineTo(labelx, yorigin-ylength);
+				    ctx.stroke();
+				    ctx.closePath();
+				}
+
+				count=0;
+				
+				for(i=labely;i>=(yorigin-ylength);i-=self.percent(ylength,ypercentageGap,false))
+				{
+					//console.log(count);
+					ctx.strokeStyle = '#eeeeee';
+				    ctx.beginPath();
+				    ctx.moveTo(xorigin, i);
+				    ctx.lineTo(xorigin+xlength, i);
+				    ctx.stroke();
+				    ctx.closePath();
+				    //labely-=self.percent(ylength,10,false);
+				    count++;
+				   // console.log(count);
+				}
+
+				if(count<yvals.length)
+				{
+					ctx.strokeStyle = '#eeeeee';
+				    ctx.beginPath();
+				    ctx.moveTo(xorigin, yorigin-ylength);
+				    ctx.lineTo(xorigin+xlength, yorigin-ylength);
+				    ctx.stroke();
+				    ctx.closePath();
+				}
+			}
+			
+		}
+
+
+
+		//label the axes
+		if(xIsText)
+		{
+			var xpercentageGap=self.percentage(xlength,xlength/xvals.length);
+			var labelx=xorigin+self.percent(xlength,xpercentageGap,false);
+			var labely=yorigin-self.percent(ylength,10,false);
+			var count=0;
+			var i=0;
+				for(i=labelx;i<=(xorigin+xlength);i+=self.percent(xlength,xpercentageGap,false))
+				{
+					ctx.fillStyle = '#396bd5';
+
+					if(xaxisslantflag)
+					{
+						ctx.save();
+					    ctx.translate(labelx-(xaxisLabelMaxLength*0.5), yorigin+15+(xaxisLabelMaxLength*0.5));
+						ctx.rotate(-Math.PI/4);
+					    ctx.fillText(xvals[count], 0, 0);
+					    ctx.restore();
+					}
+					else
+					{
+						ctx.beginPath();
+				    	ctx.fillText(xvals[count], i, yorigin+15);
+				   	 	ctx.stroke();
+				    	ctx.closePath();
+					}
+					
+				    ctx.beginPath();
+				    ctx.fillRect(i-2, yorigin-2,4,4);
+				    ctx.stroke();
+				    ctx.closePath();
+				   // console.log("labelx "+labelx+" xlength"+xlength );
+
+				    //labelx+=self.percent(xlength,10,false);
+				    count++;
+				}
+				
+				if(count<(xvals.length))
+				{
+					// console.log("labelx "+labelx+" xlength"+xlength );
+					ctx.fillStyle = '#396bd5';
+
+					if(xaxisslantflag)
+					{
+						ctx.save();
+					    ctx.translate(i-(xaxisLabelMaxLength*0.5), yorigin+15+(xaxisLabelMaxLength*0.5));
+						ctx.rotate(-Math.PI/4);
+					    ctx.fillText(xvals[xvals.length-1], 0, 0);
+					    ctx.restore();
+					}
+					else
+					{
+						ctx.beginPath();
+					    ctx.fillText(xvals[xvals.length-1], i, yorigin+15);
+					    ctx.stroke();
+					    ctx.closePath();
+					}
+					
+				    ctx.beginPath();
+				    ctx.fillRect(i, yorigin-2,4,4);
+				    ctx.stroke();
+				    ctx.closePath();
+				}
+			
+			
+			count=0;
+			var yaxisSpacing=new Array();
+			for(i=self.percent(ymax,10,false);i<=ymax;i+=self.percent(ymax,10,false))
+			{
+				ctx.fillStyle = '#396bd5';
+				ctx.beginPath();
+			    ctx.fillText(i.toFixed(toFixedPoint).toString(), xorigin-(i.toFixed(toFixedPoint).toString().length*6), labely+5);
+			    yaxisSpacing.push(xorigin-(i.toFixed(toFixedPoint).toString().length*6));
+			    ctx.stroke();
+			    ctx.closePath();
+			    ctx.beginPath();
+			    ctx.fillRect(xorigin-2, labely-2,4,4);
+			    ctx.stroke();
+			    ctx.closePath();
+			    labely-=self.percent(ylength,10,false);
+			    ++count;
+			}
+
+			if(count<10)
+			{
+				ctx.fillStyle = '#396bd5';
+				ctx.beginPath();
+			    ctx.fillText(ymax.toFixed(toFixedPoint).toString(), xorigin-(i.toFixed(toFixedPoint).toString().length*6), labely+5);
+			     yaxisSpacing.push(xorigin-(i.toFixed(toFixedPoint).toString().length*6));
+			    ctx.stroke();
+			    ctx.closePath();
+			    ctx.beginPath();
+			    ctx.fillRect(xorigin-2, labely-2,4,4);
+			    ctx.stroke();
+			    ctx.closePath();
+			}
+
+
+		}
+		else
+		{
+			var ypercentageGap=self.percentage(ylength,ylength/yvals.length);
+			var labelx=xorigin+self.percent(xlength,10,false);
+			var labely=yorigin-self.percent(ylength,ypercentageGap,false);
+			var count=0;
+			
+				for(i=self.percent(xmax,10,false);i<=xmax;i+=self.percent(xmax,10,false))
+				{
+					ctx.fillStyle = '#396bd5';
+
+					if(xaxisslantflag)
+					{
+						ctx.save();
+					    ctx.translate(labelx-(xaxisLabelMaxLength*0.5), yorigin+15+(xaxisLabelMaxLength*0.5));
+						ctx.rotate(-Math.PI/4);
+					    ctx.fillText(i.toFixed(toFixedPoint).toString(), 0, 0);
+					    ctx.restore();
+					}
+					else
+					{
+						ctx.beginPath();
+				    	ctx.fillText(i.toFixed(toFixedPoint).toString(), labelx, yorigin+15);
+				   	 	ctx.stroke();
+				    	ctx.closePath();
+					}
+					
+				    ctx.beginPath();
+				    ctx.fillRect(labelx-2, yorigin-2,4,4);
+				    ctx.stroke();
+				    ctx.closePath();
+				   // console.log("labelx "+labelx+" xlength"+xlength );
+
+				    labelx+=self.percent(xlength,10,false);
+				    count++;
+				}
+				
+				if(count<10)
+				{
+					// console.log("labelx "+labelx+" xlength"+xlength );
+					ctx.fillStyle = '#396bd5';
+
+					if(xaxisslantflag)
+					{
+						ctx.save();
+					    ctx.translate(labelx-(xaxisLabelMaxLength*0.5), yorigin+15+(xaxisLabelMaxLength*0.5));
+						ctx.rotate(-Math.PI/4);
+					    ctx.fillText(xmax.toFixed(toFixedPoint).toString(), 0, 0);
+					    ctx.restore();
+					}
+					else
+					{
+						ctx.beginPath();
+					    ctx.fillText(xmax.toFixed(toFixedPoint).toString(), labelx, yorigin+15);
+					    ctx.stroke();
+					    ctx.closePath();
+					}
+					
+				    ctx.beginPath();
+				    ctx.fillRect(labelx, yorigin-2,4,4);
+				    ctx.stroke();
+				    ctx.closePath();
+				}
+			
+			
+			count=0;
+			var yaxisSpacing=new Array();
+			for(i=labely;i>=(yorigin-ylength);i-=self.percent(ylength,ypercentageGap,false))
+			{
+				//console.log(count);
+				ctx.fillStyle = '#396bd5';
+				ctx.beginPath();
+			    ctx.fillText(yvals[count], xorigin-(yvals[count].length*fontSizePixelWidth), i+5);
+			    yaxisSpacing.push(xorigin-(xorigin-(yvals[count].length*fontSizePixelWidth)));
+			    ctx.stroke();
+			    ctx.closePath();
+			    ctx.beginPath();
+			    ctx.fillRect(xorigin-2, i-2,4,4);
+			    ctx.stroke();
+			    ctx.closePath();
+			    //labely-=self.percent(ylength,10,false);
+			    count++;
+			}
+
+			if(count<yvals.length)
+			{
+				ctx.fillStyle = '#396bd5';
+				ctx.beginPath();
+			    ctx.fillText(yvals[yvals.length-1], xorigin-(yvals[yvals.length-1].length*fontSizePixelWidth), yorigin-ylength+5);
+			     yaxisSpacing.push(xorigin-(xorigin-(yvals[yvals.length-1].length*fontSizePixelWidth)));
+			    ctx.stroke();
+			    ctx.closePath();
+			    ctx.beginPath();
+			    ctx.fillRect(xorigin-2, yorigin-ylength-2,4,4);
+			    ctx.stroke();
+			    ctx.closePath();
+			}
+
+
+		}
+		
+
+		//labelling the axes with axes names
+		if(self.options.columnTitles && self.options.columnTitles.length==2)
+		{
+			//x axis
+			ctx.fillStyle = '#396bd5';
+			ctx.beginPath();
+		    ctx.fillText(self.options.columnTitles[0], xaxisLabelxpos, xaxisLabelypos);
+		    ctx.stroke();
+		    ctx.closePath();
+
+
+		   
+		    //y axis
+		    ctx.save();
+		    ctx.translate(yaxisLabelxpos, yaxisLabelypos);
+			ctx.rotate(-Math.PI/2);
+		    ctx.fillText(self.options.columnTitles[1], 0, 0);
+		    ctx.restore();
+		}
+		
+		
+		var plotxy=new Array();
+		var plotxyN=new Array();
+		
+		if(self.options.connectPointsWithOrigin)
+		{
+			plotxy.push(xorigin+","+yorigin);
+		}
+		//plot points
+		if(xIsText)
+		{
+			var xpercentageGap=self.percentage(xlength,xlength/xvals.length);
+
+			for (i = 0; i < data.length; i++) {
+		        ctx.fillStyle = colors[i];
+
+		        //var xvalPercentage=self.percentage(xmax,xvals[i],false);
+		        var yvalPercentage=self.percentage(ymax,yvals[i],false);
+		        
+		        var xper=self.percent(xlength,xpercentageGap,true)*(i+1);
+		        var yper=self.percent(ylength,yvalPercentage,true);
+
+		        var x=xorigin+xper ;
+		        var y=yorigin-yper;
+		        ctx.beginPath();
+		        ctx.fillRect(x, y, 10, 10);
+		        //console.log(x+","+y)
+
+		        plotxy.push(x+","+y);
+		        plotxyN.push([x,y]);
+		        ctx.closePath();
+        
+   		 }
+		}
+		else
+		{
+			var ypercentageGap=self.percentage(ylength,ylength/yvals.length);
+			for (i = 0; i < data.length; i++) {
+		        ctx.fillStyle = colors[i];
+
+		        var xvalPercentage=self.percentage(xmax,xvals[i],false);
+		       //var yvalPercentage=self.percentage(ymax,yvals[i],false);
+		        
+		        var xper=self.percent(xlength,xvalPercentage,true);
+		        var yper=self.percent(ylength,ypercentageGap,true)*(i+1);
+
+		        var x=xorigin+xper ;
+		        var y=yorigin-yper;
+		        ctx.beginPath();
+		        ctx.fillRect(x, y, 10, 10);
+		        //console.log(x+","+y)
+
+		        plotxy.push(x+","+y);
+		        plotxyN.push([x,y]);
+		        ctx.closePath();
+        
+   		 }
+
+		}
+	     
+
+
+   		 
+   		 //connect the points
+
+   		 if(self.options.connectPoints)
+		{
+			var connectColor=self.getColors(1)[0];
+			if(plotxy.length==1)
+			{
+
+			}
+			else if(plotxy.length==2)
+			{
+				var coor=plotxy[0].split(",");
+				var coor1=plotxy[1].split(",");
+				ctx.strokeStyle = connectColor;
+			    ctx.beginPath();
+			    ctx.moveTo(parseInt(coor[0]), parseInt(coor[1]));
+			    ctx.lineTo(parseInt(coor1[0]), parseInt(coor1[1]));
+			    ctx.stroke();
+			    ctx.closePath();
+			}
+			else if(plotxy.length>=3)
+			{
+				for (i = 0; i <(plotxy.length-1); i++) {
+				//console.log(plotxy[i]+" "+plotxy[i+1]);
+				var coor=plotxy[i].split(",");
+				var coor1=plotxy[i+1].split(",");
+				ctx.strokeStyle = connectColor;
+			    ctx.beginPath();
+			    ctx.moveTo(parseInt(coor[0]), parseInt(coor[1]));
+			    ctx.lineTo(parseInt(coor1[0]), parseInt(coor1[1]));
+			    ctx.stroke();
+			    ctx.closePath();
+			    
+				}
+
+				var coor=plotxy[plotxy.length-2].split(",");
+				var coor1=plotxy[plotxy.length-1].split(",");
+				ctx.strokeStyle =connectColor;
+			    ctx.beginPath();
+			    ctx.moveTo(parseInt(coor[0]), parseInt(coor[1]));
+			    ctx.lineTo(parseInt(coor1[0]), parseInt(coor1[1]));
+			    ctx.stroke();
+			    ctx.closePath();
+			}
+			
+		}
+
+
+		//self.options.plotPoints=plotxy;
+
+		
+		//console.log("these are plot points "+JSON.stringify(self.options.plotPoints));
+   		// self.drawLegendForPointChart(colors);
+
+   		// self.$canvas.addEventListener('mousemove', function(evt){self.canvasMouseMove(evt,plotxyN,self,xvals,yvals);}, false);
+   		 
 	},
 	drawPointChart:function(data)
 	{

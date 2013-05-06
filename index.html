@@ -35,6 +35,14 @@ $(document).ready(function(){
 	var data6=[['part1',31.1436536],['part2',69.999],['part3',0.000013],['part4',20],['part5',37],['part6',202.5],['part7',1000]];
 	var graph6=$("#graphDiv6").kggraph({'title':'simple pie chart','type':'pie chart','width':500,'height':300,'data':data6,'useRGBAColorScheme':false,'columnTitles':['parts','qty']});
 
+
+	
+	//var data7=[[10,'199'],[70,'299'],[40,'388']];
+	var data7=[['100',199],['700',299],['400',388]];
+	var graph7=$("#graphDiv7").kggraph({'title':'simple plot graph with connected points including the origin','type':'point chart','width':500,'height':300,'data':data7,'useRGBAColorScheme':false,'useGrids':true,'connectPoints':true,'connectPointsWithOrigin':true,'columnTitles':['sample-x','sample-y'],'dataTypes':['string','number']});
+
+
+
 });
 
 
@@ -87,6 +95,10 @@ console.log(JSON.stringify(retArr));
 	</div>
 
 	<div id="graphDiv6">
+	
+	</div>
+
+	<div id="graphDiv7">
 	
 	</div>
 
