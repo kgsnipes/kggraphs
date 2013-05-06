@@ -1392,8 +1392,8 @@ var kgg={
 		{
 			ctx.fillStyle = '#396bd5';
 			ctx.beginPath();
-		    ctx.fillText(i.toFixed(2).toString(), xorigin-(i.toFixed(toFixedPoint).toString().length*6), labely+5);
-		    yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
+		    ctx.fillText(i.toFixed().toString(toFixedPoint), xorigin-(i.toFixed(toFixedPoint).toString().length*6), labely+5);
+		    yaxisSpacing.push(xorigin-(i.toFixed(toFixedPoint).toString().length*6));
 		    ctx.stroke();
 		    ctx.closePath();
 		    ctx.beginPath();
@@ -1408,8 +1408,8 @@ var kgg={
 		{
 			ctx.fillStyle = '#396bd5';
 			ctx.beginPath();
-		    ctx.fillText(ymax.toFixed(2).toString(), xorigin-(i.toFixed(toFixedPoint).toString().length*6), labely+5);
-		     yaxisSpacing.push(xorigin-(i.toFixed(2).toString().length*6));
+		    ctx.fillText(ymax.toFixed(toFixedPoint).toString(), xorigin-(i.toFixed(toFixedPoint).toString().length*6), labely+5);
+		     yaxisSpacing.push(xorigin-(i.toFixed(toFixedPoint).toString().length*6));
 		    ctx.stroke();
 		    ctx.closePath();
 		    ctx.beginPath();

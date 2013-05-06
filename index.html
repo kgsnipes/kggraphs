@@ -6,8 +6,8 @@
 <script type="text/javascript">
 $(document).ready(function(){
 
-	var data1=[[10,0.22],[70,0.00170],[40,0.30]];
-//	var data1=giveRandom2DArray(10,0.01);
+	//var data1=[[10,0.22],[70,0.00170],[40,0.30]];
+	var data1=giveRandom2DArray(10,0.01);
 	
 //simple plot graph
 	var graph1=$("#graphDiv1").kggraph({'title':'simple plot graph','type':'point chart','width':800,'height':300,'data':data1,'useRGBAColorScheme':false,'columnTitles':['sample-x ','sample-y ']});
