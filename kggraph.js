@@ -597,25 +597,6 @@ var kgg={
 		var calculatedYorigin=self.vfd(self.options.height-xaxisLabelMaxLength);
 
 		
-
-		var margin=10;
-
-
-		//var xorigin=self.vfd(self.options.width*0.20);
-	    //var yorigin=self.vfd(self.options.height*0.80);
-		
-	    var xorigin=self.vfd(calculatedXorigin);
-	    var yorigin=self.vfd(calculatedYorigin);
-	    //console.log("xorigin :"+xorigin+" yorigin"+yorigin);
-
-	    
-	   
-
-	    var ylength=self.vfd(self.options.height-(margin+self.vfd(self.options.height-yorigin)));
-	    var xlength=self.vfd(self.options.width-(xorigin+margin+xaxisLabelMaxLength));
-	    //console.log("ylength :"+ylength);
-
-	   
 	    var xxr=0;
 	    if(xIsText)
 	    {
@@ -638,12 +619,53 @@ var kgg={
 			   
 			}
 			xaxistotallabelinglength+=self.vfd(ctx.measureText(xxr.toFixed(toFixedPoint).toString()).width);
+	    
 	    }
+	    
+
+	   /* if(xaxistotallabelinglength>xlength-())
+	    {
+	    	console.log("here");
+	    	 calculatedXorigin=self.vfd(yaxisLabelMaxLength+(fontSizePixelWidth*2));
+		 calculatedYorigin=self.vfd(self.options.height-xaxisLabelMaxLength);
+	    		
+	    }
+	    else
+	    {
+
+		 calculatedXorigin=self.vfd(yaxisLabelMaxLength+(fontSizePixelWidth*2));
+		 calculatedYorigin=self.vfd(self.options.height-fontSizePixel*4);
+	    }*/
 			
 
+		
+
+		var margin=10;
 
 
-	    if(xaxistotallabelinglength>xlength)
+		//var xorigin=self.vfd(self.options.width*0.20);
+	    //var yorigin=self.vfd(self.options.height*0.80);
+		
+	    var xorigin=self.vfd(calculatedXorigin);
+	    var yorigin=self.vfd(calculatedYorigin);
+	    //console.log("xorigin :"+xorigin+" yorigin"+yorigin);
+
+	    
+	   
+
+	    var ylength=self.vfd(self.options.height-(margin+self.vfd(self.options.height-yorigin)));
+	    var xlength=self.vfd(self.options.width-(xorigin+margin+xaxisLabelMaxLength));
+	    //console.log("ylength :"+ylength);
+
+	    console.log("xaxisLabelMaxLength"+xaxisLabelMaxLength+"xlength"+xlength);
+
+	   
+
+
+	    console.log("xaxistotallabelinglength"+xaxistotallabelinglength+"xlength"+xlength);
+
+
+	    if(xaxistotallabelinglength>(xlength-self.percent(xlength,self.percentage(xlength,xlength/xvals.length),false)))
 	    {
 	    	
 			 calculatedYorigin=self.vfd(self.options.height-(xaxisLabelMaxLength*1.5));
@@ -749,7 +771,7 @@ var kgg={
 		}
 
 		//draw grids if requested
-		if(self.options.useGrids)
+		if(self.options.useGrids)			
 		{
 			if(xIsText)
 			{
@@ -1201,9 +1223,9 @@ var kgg={
 
 		
 		//console.log("these are plot points "+JSON.stringify(self.options.plotPoints));
-   		// self.drawLegendForPointChart(colors);
+   		 self.drawLegendForPointChart(colors);
 
-   		// self.$canvas.addEventListener('mousemove', function(evt){self.canvasMouseMove(evt,plotxyN,self,xvals,yvals);}, false);
+   		 //self.$canvas.addEventListener('mousemove', function(evt){self.canvasMouseMove(evt,plotxyN,self,xvals,yvals);}, false);
    		 
 	},
 	drawPointChart:function(data)
